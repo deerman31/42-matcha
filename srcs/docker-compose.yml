@@ -1,0 +1,65 @@
+services:
+  back:
+    image: 42-matcha/back:${VERSION:-latest}
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    restart: always
+    # 本番環境では開ける必要がない。開発では、直接リクエストを送れたりするので開けといた方が便利。
+    ports:
+      - "${BACK_PORT}:${BACK_PORT}"
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  front:
+    image: 42-matcha/front:${VERSION:-latest}
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    restart: always
+    # 本番環境では開ける必要がない。開発では、直接リクエストを送れたりするので開けといた方が便利。
+    ports:
+      - "${FRONT_PORT}:${FRONT_PORT}"
+    env_file: .env
+    depends_on:
+      - back
+    networks:
+      - app-network
+
+  db:
+    image: 42-matcha/db:${VERSION:-latest}
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    restart: always
+    env_file: .env
+    # ports:
+    #   - "${DB_PORT}:${DB_PORT}"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGPORT: ${POSTGRES_PORT}
+    healthcheck:
+      # 追加推奨
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  app-network:
+    name: 42-matcha
+    driver: bridge
