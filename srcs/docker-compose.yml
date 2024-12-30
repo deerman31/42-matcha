@@ -1,5 +1,20 @@
 services:
 
+  back:
+    image: 42-matcha/back:${VERSION:-latest}
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    restart: always
+    # 本番環境では開ける必要がない。開発では、直接リクエストを送れたりするので開けといた方が便利。
+    ports:
+      - "${BACK_PORT}:3000"
+    env_file: .env
+    # depends_on:
+    #   - db
+    networks:
+      - app-network
+
   front:
     image: 42-matcha/front:${VERSION:-latest}
     build:

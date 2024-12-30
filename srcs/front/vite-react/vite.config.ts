@@ -7,7 +7,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0', // これが重要です
     port: 5173,
-    //port: process.env.FRONT_PORT ? parseInt(process.env.FRONT_PORT) : 5173,
     watch: {
       usePolling: true
     }
