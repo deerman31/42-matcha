@@ -8,7 +8,7 @@ services:
     restart: always
     # 本番環境では開ける必要がない。開発では、直接リクエストを送れたりするので開けといた方が便利。
     ports:
-      - "${FRONT_PORT}:${FRONT_PORT}"
+      - "${FRONT_PORT}:5173"
     env_file: .env
     # depends_on:
     #   - back

@@ -1,7 +1,5 @@
 FROM node:23-bullseye-slim
 
-ENV PORT=${FRONT_PORT}
-
 WORKDIR /app
 
 COPY ./vite-react/package*.json ./
@@ -15,8 +13,7 @@ COPY ./vite-react/ .
 RUN npm run build
 
 # Expose the new port the app runs on
-#EXPOSE 5173
-EXPOSE ${PORT}
+EXPOSE 5173
 
 # Define the command to run the app
 #CMD ["npm", "start"]
