@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"golang-echo/auth"
 	"golang-echo/middle"
+	"golang-echo/tags"
 	"golang-echo/users"
 	"net/http"
 
@@ -24,6 +25,9 @@ func routing(e *echo.Echo, db *sql.DB) {
 	protected := e.Group("/api")
 	protected.Use(middle.JWTMiddleware())
 	users.UserRoutes(protected, db)
+
+	tags.TagRoutes(protected, db)
+
 
 	// protected.POST("/users/set/user_info", set.InitSetUserInfo(db))
 

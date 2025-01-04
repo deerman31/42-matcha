@@ -25,6 +25,7 @@ func NewValidator() *CustomValidator {
 	v.RegisterValidation("birthdate", validateBirthdate)
 	v.RegisterValidation("self_intro", validateSelfIntro)
 
+	v.RegisterValidation("tag", validateTag)
 	return &CustomValidator{validator: v}
 }
 
@@ -63,6 +64,8 @@ func formatValidationError(err error) error {
 			errMsgs = append(errMsgs, "Invalid date")
 		case "self_intro":
 			errMsgs = append(errMsgs, "Invalid self intro")
+		case "tag":
+			errMsgs = append(errMsgs, "Invalid tag")
 		}
 	}
 

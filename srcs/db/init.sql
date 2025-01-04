@@ -151,3 +151,23 @@ CREATE TRIGGER create_user_image_after_user_creation
     FOR EACH ROW
     EXECUTE FUNCTION create_user_image_on_user_creation();
 
+
+-- tag master table
+CREATE TABLE IF NOT EXISTS tags (
+    id SERIAL PRIMARY KEY,
+    tag_name VARCHAR(50) UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_tag_name ON tags(tag_name);
+
+CREATE TABLE IF NOT EXISTS user_tags (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    UNIQUE (user_id, tag_id), -- UNIQUE KEYではなくUNIQUEを使用
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+);
+-- 複合インデックス
+CREATE INDEX idx_user_tag ON user_tags(user_id, tag_id);
