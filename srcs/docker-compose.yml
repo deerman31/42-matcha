@@ -10,6 +10,7 @@ services:
     ports:
       - "${BACK_PORT}:3000"
     env_file: .env
+
     depends_on:
       db:
         condition: service_healthy # ヘルスチェックが通るまで待つ
@@ -48,6 +49,21 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    # logging:
+    #   driver: "none" # ログ出力を完全に無効化
 
 volumes:
   postgres_data:
