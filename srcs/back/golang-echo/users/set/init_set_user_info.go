@@ -17,12 +17,11 @@ const (
 			lastname = $1,
 			firstname = $2,
 			birthdate = $3,
-			is_gps = $4,
-			gender = $5,
-			sexuality = $6,
-			area = $7,
-			self_intro = $8
-		WHERE user_id = $9
+			gender = $4,
+			sexuality = $5,
+			area = $6,
+			self_intro = $7
+		WHERE user_id = $8
 		RETURNING id`
 
 	updateUserPreparationQuery = `
@@ -34,14 +33,14 @@ const (
 )
 
 type InitSetUserInfoRequest struct {
-	LastName     string `json:"lastname" validate:"required,name"`
-	FirstName    string `json:"firstname" validate:"required,name"`
-	BirthDate    string `json:"birthdate" validate:"required,birthdate"`
-	IsGpsEnabled bool   `json:"isGpsEnabled"`
-	Gender       string `json:"gender" validate:"required,oneof=male female"`
-	Sexuality    string `json:"sexuality" validate:"required,oneof=male female male/female"`
-	Area         string `json:"area" validate:"required,area"`
-	SelfIntro    string `json:"self_intro" validate:"required,self_intro"`
+	LastName  string `json:"lastname" validate:"required,name"`
+	FirstName string `json:"firstname" validate:"required,name"`
+	BirthDate string `json:"birthdate" validate:"required,birthdate"`
+	//IsGpsEnabled bool   `json:"isGpsEnabled"`
+	Gender    string `json:"gender" validate:"required,oneof=male female"`
+	Sexuality string `json:"sexuality" validate:"required,oneof=male female male/female"`
+	Area      string `json:"area" validate:"required,area"`
+	SelfIntro string `json:"self_intro" validate:"required,self_intro"`
 }
 
 func InitSetUserInfo(db *sql.DB) echo.HandlerFunc {
@@ -77,7 +76,7 @@ func InitSetUserInfo(db *sql.DB) echo.HandlerFunc {
 		req.LastName = c.FormValue("lastname")
 		req.FirstName = c.FormValue("firstname")
 		req.BirthDate = c.FormValue("birthdate")
-		req.IsGpsEnabled = c.FormValue("isGpsEnabled") == "true"
+		//req.IsGpsEnabled = c.FormValue("isGpsEnabled") == "true"
 		req.Gender = c.FormValue("gender")
 		req.Sexuality = c.FormValue("sexuality")
 		req.Area = c.FormValue("area")
@@ -104,7 +103,7 @@ func InitSetUserInfo(db *sql.DB) echo.HandlerFunc {
 		}
 		defer tx.Rollback() // エラーが発生した場合はロールバック
 
-		if _, err := tx.Exec(setUserInfoQuery, req.LastName, req.FirstName, req.BirthDate, req.IsGpsEnabled, req.Gender, req.Sexuality, req.Area, req.SelfIntro, userID); err != nil {
+		if _, err := tx.Exec(setUserInfoQuery, req.LastName, req.FirstName, req.BirthDate, req.Gender, req.Sexuality, req.Area, req.SelfIntro, userID); err != nil {
 			os.Remove(filePath)
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		}
