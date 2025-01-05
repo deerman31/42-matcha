@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"golang-echo/auth"
+	"golang-echo/gps"
 	"golang-echo/middle"
 	"golang-echo/tags"
 	"golang-echo/users"
@@ -27,7 +28,7 @@ func routing(e *echo.Echo, db *sql.DB) {
 	users.UserRoutes(protected, db)
 
 	tags.TagRoutes(protected, db)
-
+	gps.GpsRoutes(protected, db)
 
 	// protected.POST("/users/set/user_info", set.InitSetUserInfo(db))
 

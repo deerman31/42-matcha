@@ -1,3 +1,7 @@
+-- 1. PostGIS拡張を最初に有効化
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
@@ -56,7 +60,7 @@ CREATE TABLE IF NOT EXISTS user_info (
     lastname VARCHAR(50) NOT NULL DEFAULT '', -- 姓
     firstname VARCHAR(50) NOT NULL DEFAULT '', -- 名前
     birthdate DATE NOT NULL DEFAULT '2000-04-02', -- 生年月日
-    is_gps BOOLEAN DEFAULT FALSE, -- 位置情報を利用するか
+    --is_gps BOOLEAN DEFAULT FALSE, -- 位置情報を利用するか
     gender gender_type NOT NULL DEFAULT 'male', -- 性別
     sexuality sexuality_type NOT NULL DEFAULT 'male', -- 性的対象
     area prefecture NOT NULL DEFAULT 'Tokyo', -- 都道府県

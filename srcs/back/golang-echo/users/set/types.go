@@ -17,7 +17,6 @@ type UpdateFieldConfigs struct {
 	FirstName UpdateFieldConfig
 	SelfIntro UpdateFieldConfig
 	BirthDate UpdateFieldConfig
-	IsGps     UpdateFieldConfig
 }
 
 // GenericUpdateRequest is a generic request structure
@@ -69,12 +68,6 @@ func NewUpdateFieldConfigs() UpdateFieldConfigs {
 			TableName:      "user_info",
 			ValidateTag:    "required,birthdate",
 			MessageSuccess: "Birth date updated successfully",
-		},
-		IsGps: UpdateFieldConfig{
-			FieldName:      "is_gps",
-			TableName:      "user_info",
-			ValidateTag:    "required,boolean",
-			MessageSuccess: "GPS setting updated successfully",
 		},
 	}
 }

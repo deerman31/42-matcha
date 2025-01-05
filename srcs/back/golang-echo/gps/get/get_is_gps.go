@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetIsGps(db *sql.DB) echo.HandlerFunc {
+func GetIsGPS(db *sql.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		claims, ok := c.Get("user").(*jwt_token.Claims)
 		if !ok {
@@ -22,10 +22,10 @@ func GetIsGps(db *sql.DB) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not start transaction"})
 		}
 		defer tx.Rollback() // エラーが発生した場合はロールバック
-		const query = `SELECT is_gps FROM user_info WHERE user_id = $1;`
+		const query = `SELECT is_gps FROM user_location WHERE user_id = $1;`
 		// クエリを実行
-		var isGps bool
-		if err = tx.QueryRow(query, userID).Scan(&isGps); err != nil {
+		var isGPS bool
+		if err = tx.QueryRow(query, userID).Scan(&isGPS); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": fmt.Sprintf("failed to query user tags: %v", err)})
 		}
 
@@ -33,6 +33,7 @@ func GetIsGps(db *sql.DB) echo.HandlerFunc {
 		if err = tx.Commit(); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not commit transaction"})
 		}
-		return c.JSON(http.StatusOK, map[string]bool{"is_gps": isGps})
+		return c.JSON(http.StatusOK, map[string]bool{"is_gps": isGPS})
+
 	}
 }
