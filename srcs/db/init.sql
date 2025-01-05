@@ -171,3 +171,56 @@ CREATE TABLE IF NOT EXISTS user_tags (
 );
 -- 複合インデックス
 CREATE INDEX idx_user_tag ON user_tags(user_id, tag_id);
+
+
+-- PostGISの有効化（必須）
+
+CREATE TABLE IF NOT EXISTS user_location (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    location GEOGRAPHY(POINT, 4326), -- WGS84形式の位置情報
+    --location_alternative GEOGRAPHY(POINT, 4326), --is_gpsがfalseの場合に使う位置情報、ユーザーが自分で設定する
+    location_alternative GEOGRAPHY(POINT, 4326) DEFAULT ST_SetSRID(ST_MakePoint(139.7454, 35.6586), 4326)::geography, -- Defaultは東京タワー
+    --Alternative
+    location_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, -- 位置情報の最終更新時刻
+    is_gps BOOLEAN DEFAULT FALSE, -- 位置情報を利用するか
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT unique_user_location UNIQUE (user_id)
+);
+
+-- 空間インデックス
+CREATE INDEX idx_user_location_gist ON user_location USING GIST (location);
+CREATE INDEX idx_user_location_alternative_gist ON user_location USING GIST (location_alternative);
+
+-- 更新時刻の自動更新トリガー
+CREATE OR REPLACE FUNCTION update_user_location_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    NEW.location_updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_user_location_updated_at
+    BEFORE UPDATE ON user_location
+    FOR EACH ROW
+    EXECUTE FUNCTION update_user_location_updated_at_column();
+
+-- ユーザー作成時の自動レコード作成トリガー
+CREATE OR REPLACE FUNCTION create_user_location_on_user_creation()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO user_location (user_id)
+    VALUES (NEW.id);
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER create_user_location_after_user_creation
+    AFTER INSERT ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION create_user_location_on_user_creation();
