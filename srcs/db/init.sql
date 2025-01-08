@@ -228,3 +228,143 @@ CREATE TRIGGER create_user_location_after_user_creation
     AFTER INSERT ON users
     FOR EACH ROW
     EXECUTE FUNCTION create_user_location_on_user_creation();
+
+
+
+-- プロフィール閲覧履歴テーブル
+CREATE TABLE IF NOT EXISTS profile_views (
+    id SERIAL PRIMARY KEY,
+    viewer_id INTEGER NOT NULL, -- 閲覧したユーザーのID
+    viewed_id INTEGER NOT NULL, -- 閲覧されたユーザーのID
+    viewed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (viewer_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (viewed_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT unique_profile_view UNIQUE (viewer_id, viewed_id)
+);
+-- インデックス
+CREATE INDEX idx_profile_views_viewer ON profile_views(viewer_id);
+CREATE INDEX idx_profile_views_viewed ON profile_views(viewed_id);
+CREATE INDEX idx_profile_views_timestamp ON profile_views(viewed_at);
+
+-- ユーザー間のlike関係を管理するテーブル
+CREATE TABLE IF NOT EXISTS user_likes (
+    id SERIAL PRIMARY KEY,
+    liker_id INTEGER NOT NULL, -- likeを送信したユーザーのID
+    liked_id INTEGER NOT NULL, -- likeを受け取ったユーザーのID
+    --is_active BOOLEAN DEFAULT TRUE, -- likeが有効か（unlikeした場合はfalse）
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (liker_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (liked_id) REFERENCES users(id) ON DELETE CASCADE,
+    -- 同じユーザーの組み合わせで複数のlikeを防ぐ
+    CONSTRAINT unique_user_like UNIQUE (liker_id, liked_id)
+);
+
+
+-- ユーザーのfriend関係を管理する
+CREATE TABLE IF NOT EXISTS user_friends (
+    id SERIAL PRIMARY KEY,
+    -- user_idの小さい方をuser_id1、大きい方をuser_id2として格納
+    user_id1 INTEGER NOT NULL,
+    user_id2 INTEGER NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id1) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id2) REFERENCES users(id) ON DELETE CASCADE,
+    -- user_id1 は必ず user_id2 より小さくなるように制約
+    CONSTRAINT user_friend_order CHECK (user_id1 < user_id2),
+    -- 同じユーザーの組み合わせを防ぐ
+    CONSTRAINT unique_user_friend UNIQUE (user_id1, user_id2)
+)
+-- インデックス
+CREATE INDEX idx_user_friends_user1 ON user_friends(user_id1);
+CREATE INDEX idx_user_friends_user2 ON user_friends(user_id2);
+-- フレンド関係を作成する関数（IDの大小関係を自動的に処理）
+CREATE OR REPLACE FUNCTION create_friend_relationship(user_a INTEGER, user_b INTEGER)
+RETURNS VOID AS $$
+BEGIN
+    IF user_a <> user_b THEN
+        INSERT INTO user_friends (user_id1, user_id2)
+        VALUES (
+            LEAST(user_a, user_b),
+            GREATEST(user_a, user_b)
+        )
+        ON CONFLICT (user_id1, user_id2) DO NOTHING;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ユーザーのblock関係を管理する
+CREATE TABLE IF NOT EXISTS user_blocks (
+    id SERIAL PRIMARY KEY,
+    blocker_id INTEGER NOT NULL, -- blockしたuser
+    blocked_id INTEGER NOT NULL, -- blockされたuser
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (blocker_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (blocked_id) REFERENCES users(id) ON DELETE CASCADE,
+    -- 同じユーザーの組み合わせを防ぐ
+    CONSTRAINT unique_user_block UNIQUE (blocker_id, blocked_id)
+)
+
+CREATE INDEX idx_user_blocks_blocker_id ON user_blocks(blocker_id);
+
+CREATE INDEX idx_user_blocks_blocked_id ON user_blocks(blocked_id);
+
+-- 偽アカウントの報告を管理する
+CREATE TABLE IF NOT EXISTS report_fake_accounts (
+    id SERIAL PRIMARY KEY,
+    repoter_id INTEGER NOT NULL, -- 報告したuser
+    fake_account_id INTEGER NOT NULL, -- 報告されたuser
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (repoter_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (fake_account_id) REFERENCES users(id) ON DELETE CASCADE,
+    -- 同じユーザーの組み合わせを防ぐ
+    CONSTRAINT unique_user_fake UNIQUE (repoter_id, fake_account_id)
+)
+CREATE INDEX idx_fake_accounts_reporter_id ON report_fake_accounts(repoter_id);
+CREATE INDEX idx_fake_accounts_fake_id ON report_fake_accounts(fake_account_id);
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS user_fame_ratings (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+-- インデックスの作成
+CREATE INDEX idx_user_fame_rating_user_id ON user_fame_ratings(user_id);
+
+-- user_fame_ratings テーブルの更新時刻を自動更新する関数
+CREATE OR REPLACE FUNCTION update_user_fame_rating_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- user_fame_ratings テーブルの更新時刻自動更新トリガー
+CREATE TRIGGER update_user_fame_rating_updated_at
+    BEFORE UPDATE ON user_fame_ratings
+    FOR EACH ROW
+    EXECUTE FUNCTION update_user_fame_rating_updated_at_column();
+
+
+-- usersテーブルにレコードが挿入された時、自動的にuser_fame_ratingsにレコードを作成するトリガー
+CREATE OR REPLACE FUNCTION create_user_fame_rating_on_user_creation()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO user_fame_ratings (user_id)
+    VALUES (NEW.id);
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- トリガーの作成
+CREATE TRIGGER create_user_fame_rating_after_user_creation
+    AFTER INSERT ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION create_user_fame_rating_on_user_creation();
