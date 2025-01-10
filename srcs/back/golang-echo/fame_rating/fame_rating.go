@@ -68,6 +68,31 @@ func GetFameRating(db *sql.DB) echo.HandlerFunc {
 
 	}
 }
+//CalculateFameRating
+func CalculateFameRating(tx *sql.Tx, userID int) (int, error) {
+	vieweds, err := viewedCount(tx, userID, 30*24*time.Hour)
+	if err != nil {
+		return 0, err
+	}
+	likeds, err := likedCount(tx, userID, 30*24*time.Hour)
+	if err != nil {
+		return 0, err
+	}
+	friends, err := friendCount(tx, userID)
+	if err != nil {
+		return 0, err
+	}
+	blocks, err := blockCount(tx, userID)
+	if err != nil {
+		return 0, err
+	}
+	fakeAccounts, err := fakeAccountCount(tx, userID)
+	if err != nil {
+		return 0, err
+	}
+	rating := fameRatingCalculation(vieweds, likeds, friends, blocks, fakeAccounts)
+	return rating, nil
+}
 
 func fameRatingCalculation(vieweds, likeds, friends, blocks, fakeAccounts int) int {
 	point := (vieweds * viewedPoint) + (likeds * likedPoint) + (friends * friendPoint) - (blocks * blockPoint) - (fakeAccounts * fakeAccountPoint)

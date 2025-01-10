@@ -11,6 +11,22 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func getImagePath(tx *sql.Tx, userID int, pathNum int) (string, error) {
+	var imagePath sql.NullString
+	query := fmt.Sprintf("SELECT profile_image_path%d FROM user_image WHERE user_id = $1", pathNum)
+	err := tx.QueryRow(query, userID).Scan(&imagePath)
+	if err != nil && err != sql.ErrNoRows {
+		return "", err
+	}
+	retImagePath := ""
+	if imagePath.Valid && imagePath.String != "" {
+		retImagePath = imagePath.String
+	} else {
+		retImagePath = os.Getenv("DEFAULT_IMAGE")
+	}
+	return retImagePath, nil
+}
+
 func GetImage(db *sql.DB, imageNum int) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		claims, ok := c.Get("user").(*jwt_token.Claims)
@@ -25,28 +41,19 @@ func GetImage(db *sql.DB, imageNum int) echo.HandlerFunc {
 		}
 		defer tx.Rollback() // エラーが発生した場合はロールバック
 
-		var imagePath sql.NullString
-
-		//query:="SELECT profile_image_path1 FROM user_info WHERE user_id = ?"
-		query := fmt.Sprintf("SELECT profile_image_path%d FROM user_image WHERE user_id = $1", imageNum)
-		err = tx.QueryRow(query, userID).Scan(&imagePath)
-		if err != nil && err != sql.ErrNoRows {
+		imagePath, err := getImagePath(tx, userID, imageNum)
+		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "Failed to get existing image path",
 			})
 		}
-		retImagePath := ""
-		if imagePath.Valid && imagePath.String != "" {
-			retImagePath = imagePath.String
-		} else {
-			retImagePath = os.Getenv("DEFAULT_IMAGE")
-		}
+
 		// 画像データを送信する途中
 		/*
 			取得した画像pathから画像を取得
 			取得した画像データをなにかしらのデータとしてフロントに送信
 		*/
-		imageData, err := os.ReadFile(retImagePath)
+		imageData, err := os.ReadFile(imagePath)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{
 				"error": "画像の読み込みに失敗しました",

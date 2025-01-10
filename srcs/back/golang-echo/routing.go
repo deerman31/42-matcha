@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"golang-echo/auth"
+	"golang-echo/browse"
 	"golang-echo/friend"
 	"golang-echo/gps"
 	"golang-echo/middle"
@@ -28,6 +29,7 @@ func routing(e *echo.Echo, db *sql.DB) {
 	protected := e.Group("/api")
 	protected.Use(middle.JWTMiddleware())
 	users.UserRoutes(protected, db)
+	browse.BrowseRoutes(protected, db)
 
 	tags.TagRoutes(protected, db)
 	gps.GpsRoutes(protected, db)

@@ -1,7 +1,7 @@
 -- 1. PostGIS拡張を最初に有効化
 CREATE EXTENSION IF NOT EXISTS postgis;
 
-
+-- userはuserの基本的な情報が入っているテーブル
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
@@ -10,8 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
     is_online BOOLEAN DEFAULT FALSE,
     is_registered BOOLEAN DEFAULT TRUE, -- is_registeredはsignup後にメールで認証したかどうかを表すものだが、開発の最初ではスピードを重視し、でふぉるとでtrue
     is_preparation BOOLEAN DEFAULT FALSE,
-
-
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -273,7 +271,7 @@ CREATE TABLE IF NOT EXISTS user_friends (
     CONSTRAINT user_friend_order CHECK (user_id1 < user_id2),
     -- 同じユーザーの組み合わせを防ぐ
     CONSTRAINT unique_user_friend UNIQUE (user_id1, user_id2)
-)
+);
 -- インデックス
 CREATE INDEX idx_user_friends_user1 ON user_friends(user_id1);
 CREATE INDEX idx_user_friends_user2 ON user_friends(user_id2);
@@ -302,7 +300,7 @@ CREATE TABLE IF NOT EXISTS user_blocks (
     FOREIGN KEY (blocked_id) REFERENCES users(id) ON DELETE CASCADE,
     -- 同じユーザーの組み合わせを防ぐ
     CONSTRAINT unique_user_block UNIQUE (blocker_id, blocked_id)
-)
+);
 
 CREATE INDEX idx_user_blocks_blocker_id ON user_blocks(blocker_id);
 
@@ -311,60 +309,18 @@ CREATE INDEX idx_user_blocks_blocked_id ON user_blocks(blocked_id);
 -- 偽アカウントの報告を管理する
 CREATE TABLE IF NOT EXISTS report_fake_accounts (
     id SERIAL PRIMARY KEY,
-    repoter_id INTEGER NOT NULL, -- 報告したuser
+    reporter_id INTEGER NOT NULL, -- 報告したuser
     fake_account_id INTEGER NOT NULL, -- 報告されたuser
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (repoter_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (fake_account_id) REFERENCES users(id) ON DELETE CASCADE,
     -- 同じユーザーの組み合わせを防ぐ
-    CONSTRAINT unique_user_fake UNIQUE (repoter_id, fake_account_id)
-)
-CREATE INDEX idx_fake_accounts_reporter_id ON report_fake_accounts(repoter_id);
+    CONSTRAINT unique_user_fake UNIQUE (reporter_id, fake_account_id)
+);
+CREATE INDEX idx_fake_accounts_reporter_id ON report_fake_accounts(reporter_id);
 CREATE INDEX idx_fake_accounts_fake_id ON report_fake_accounts(fake_account_id);
 
 
 
 
 
-
-CREATE TABLE IF NOT EXISTS user_fame_ratings (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)
--- インデックスの作成
-CREATE INDEX idx_user_fame_rating_user_id ON user_fame_ratings(user_id);
-
--- user_fame_ratings テーブルの更新時刻を自動更新する関数
-CREATE OR REPLACE FUNCTION update_user_fame_rating_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- user_fame_ratings テーブルの更新時刻自動更新トリガー
-CREATE TRIGGER update_user_fame_rating_updated_at
-    BEFORE UPDATE ON user_fame_ratings
-    FOR EACH ROW
-    EXECUTE FUNCTION update_user_fame_rating_updated_at_column();
-
-
--- usersテーブルにレコードが挿入された時、自動的にuser_fame_ratingsにレコードを作成するトリガー
-CREATE OR REPLACE FUNCTION create_user_fame_rating_on_user_creation()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO user_fame_ratings (user_id)
-    VALUES (NEW.id);
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
--- トリガーの作成
-CREATE TRIGGER create_user_fame_rating_after_user_creation
-    AFTER INSERT ON users
-    FOR EACH ROW
-    EXECUTE FUNCTION create_user_fame_rating_on_user_creation();
