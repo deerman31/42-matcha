@@ -23,15 +23,15 @@ type GenderType string
 
 const (
 	GMale   GenderType = "male"
-	GFamale GenderType = "famale"
+	GFemale GenderType = "female"
 )
 
 type SexualityType string
 
 const (
 	SMale       SexualityType = "male"
-	SFamale     SexualityType = "famale"
-	SMaleFamale SexualityType = "male/famale"
+	SFemale     SexualityType = "female"
+	SMaleFemale SexualityType = "male/female"
 )
 
 type MaleUsername string
@@ -44,14 +44,14 @@ const (
 	Shin    MaleUsername = "shin"
 )
 
-type FamaleUsername string
+type FemaleUsername string
 
 const (
-	Yui    FamaleUsername = "yui"
-	Mayumi FamaleUsername = "mayumi"
-	Miyu   FamaleUsername = "miyu"
-	Meiko  FamaleUsername = "meiko"
-	Keiko  FamaleUsername = "keiko"
+	Yui    FemaleUsername = "yui"
+	Mayumi FemaleUsername = "mayumi"
+	Miyu   FemaleUsername = "miyu"
+	Meiko  FemaleUsername = "meiko"
+	Keiko  FemaleUsername = "keiko"
 )
 
 
@@ -63,11 +63,11 @@ const (
 	MaleImagePath4 MaleImagePath = "/home/appuser/uploads/images1/male4.png"
 	MaleImagePath5 MaleImagePath = "/home/appuser/uploads/images1/male5.png"
 )
-type FamaleImagePath string
+type FemaleImagePath string
 const (
-	FamaleImagePath1 FamaleImagePath = "/home/appuser/uploads/images1/famale1.png"
-	FamaleImagePath2 FamaleImagePath = "/home/appuser/uploads/images1/famale2.png"
-	FamaleImagePath3 FamaleImagePath = "/home/appuser/uploads/images1/famale3.png"
-	FamaleImagePath4 FamaleImagePath = "/home/appuser/uploads/images1/famale4.png"
-	FamaleImagePath5 FamaleImagePath = "/home/appuser/uploads/images1/famale5.png"
+	FamaleImagePath1 FemaleImagePath = "/home/appuser/uploads/images1/female1.png"
+	FamaleImagePath2 FemaleImagePath = "/home/appuser/uploads/images1/female2.png"
+	FamaleImagePath3 FemaleImagePath = "/home/appuser/uploads/images1/female3.png"
+	FamaleImagePath4 FemaleImagePath = "/home/appuser/uploads/images1/female4.png"
+	FamaleImagePath5 FemaleImagePath = "/home/appuser/uploads/images1/female5.png"
 )

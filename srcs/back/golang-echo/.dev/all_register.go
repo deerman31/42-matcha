@@ -16,6 +16,34 @@ var (
 	ErrTransactionFailed = errors.New("transaction failed")
 )
 
+const (
+	// 新規ユーザーを登録するためのクエリ
+	insertNewUserQuery = `
+        INSERT INTO users (
+            username, 
+            email, 
+            password_hash,
+			is_registered,
+			is_preparation
+        ) VALUES ($1, $2, $3, $4, $5)
+		 RETURNING id
+    `
+	setUserInfoQuery = `
+		UPDATE user_info
+		SET 
+			lastname = $1,
+			firstname = $2,
+			birthdate = $3,
+			gender = $4,
+			sexuality = $5,
+			area = $6,
+			self_intro = $7
+		WHERE user_id = $8
+		RETURNING id`
+
+	imageOneQuery = `UPDATE user_image SET profile_image_path1 = $1 WHERE user_id = $2 RETURNING id`
+)
+
 func (f *FiveThousandRegisterHandler) AllRegister(c echo.Context) error {
 	err := f.service.AllRegister()
 	if err != nil {
@@ -32,12 +60,14 @@ func (f *FiveThousandRegisterService) AllRegister() error {
 	defer tx.Rollback()
 
 	for i := 0; i < 2500; i += 1 {
+		fmt.Println("male", i)
 		if err := register(tx, i, GMale); err != nil {
 			return err
 		}
 	}
 	for i := 0; i < 2500; i += 1 {
-		if err := register(tx, i, GMale); err != nil {
+		fmt.Println("female", i)
+		if err := register(tx, i, GFemale); err != nil {
 			return err
 		}
 	}
@@ -61,7 +91,16 @@ func register(tx *sql.Tx, num int, gender GenderType) error {
 		return err
 	}
 	password = string(hashedBytes)
-	_, err = tx.Query(query, userName, email, password, lastName, firstName, birthDate, sexuality, area, selfIntro, imagePath)
+	var userID int
+	err = tx.QueryRow(insertNewUserQuery, userName, email, password, true, true).Scan(&userID)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(setUserInfoQuery, lastName, firstName, birthDate, gender, sexuality, area, selfIntro, userID)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(imageOneQuery, imagePath, userID)
 	if err != nil {
 		return err
 	}

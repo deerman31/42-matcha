@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"golang-echo/auth"
 	"golang-echo/browse"
-	"golang-echo/dev"
 	"golang-echo/friend"
 	"golang-echo/gps"
 	"golang-echo/middle"
@@ -27,6 +26,8 @@ func routing(e *echo.Echo, db *sql.DB) {
 	g.POST("/register", auth.Register(db))
 	g.POST("/login", auth.Login(db))
 	g.POST("/logout", auth.Logout(db))
+	//test用
+	//dev.DevRoutes(g, db)
 
 	protected := e.Group("/api")
 	protected.Use(middle.JWTMiddleware())
@@ -40,6 +41,4 @@ func routing(e *echo.Echo, db *sql.DB) {
 	profile.ProfileRoutes(protected, db)
 	friend.FriendRoutes(protected, db)
 
-	//test用
-	dev.DevRoutes(protected, db)
 }

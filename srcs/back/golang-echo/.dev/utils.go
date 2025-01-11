@@ -12,7 +12,7 @@ func getImagePath(gender GenderType) string {
 	if gender == GMale {
 		return fmt.Sprintf("/home/appuser/uploads/images1/male%d", num) + ".png"
 	} else {
-		return fmt.Sprintf("/home/appuser/uploads/images1/famale%d", num) + ".png"
+		return fmt.Sprintf("/home/appuser/uploads/images1/female%d", num) + ".png"
 	}
 }
 
@@ -21,9 +21,9 @@ func getSexuality() string {
 	case 1:
 		return string(SMale)
 	case 2:
-		return string(SFamale)
+		return string(SFemale)
 	default:
-		return string(SMaleFamale)
+		return string(SMaleFemale)
 	}
 }
 

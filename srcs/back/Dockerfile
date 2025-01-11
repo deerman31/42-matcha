@@ -60,11 +60,11 @@ COPY ./default_image/male2.png /home/appuser/uploads/images1
 COPY ./default_image/male3.png /home/appuser/uploads/images1
 COPY ./default_image/male4.png /home/appuser/uploads/images1
 COPY ./default_image/male5.png /home/appuser/uploads/images1
-COPY ./default_image/famale1.png /home/appuser/uploads/images1
-COPY ./default_image/famale2.png /home/appuser/uploads/images1
-COPY ./default_image/famale3.png /home/appuser/uploads/images1
-COPY ./default_image/famale4.png /home/appuser/uploads/images1
-COPY ./default_image/famale5.png /home/appuser/uploads/images1
+COPY ./default_image/female1.png /home/appuser/uploads/images1
+COPY ./default_image/female2.png /home/appuser/uploads/images1
+COPY ./default_image/female3.png /home/appuser/uploads/images1
+COPY ./default_image/female4.png /home/appuser/uploads/images1
+COPY ./default_image/female5.png /home/appuser/uploads/images1
 
 
 EXPOSE 3000
