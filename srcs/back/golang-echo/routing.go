@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"golang-echo/auth"
 	"golang-echo/browse"
+	"golang-echo/dev"
 	"golang-echo/friend"
 	"golang-echo/gps"
 	"golang-echo/middle"
 	"golang-echo/profile"
+	"golang-echo/research"
 	"golang-echo/tags"
 	"golang-echo/users"
 	"net/http"
@@ -30,6 +32,7 @@ func routing(e *echo.Echo, db *sql.DB) {
 	protected.Use(middle.JWTMiddleware())
 	users.UserRoutes(protected, db)
 	browse.BrowseRoutes(protected, db)
+	research.ResearchRoutes(protected, db)
 
 	tags.TagRoutes(protected, db)
 	gps.GpsRoutes(protected, db)
@@ -37,4 +40,6 @@ func routing(e *echo.Echo, db *sql.DB) {
 	profile.ProfileRoutes(protected, db)
 	friend.FriendRoutes(protected, db)
 
+	//test用
+	dev.DevRoutes(protected, db)
 }
