@@ -24,6 +24,7 @@ func (b *BrowseHandler) GetBrowseUser(c echo.Context) error {
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, BrowseResponse{Error: "Invalid request body"})
 	}
+
 	// validationをここで行う
 	if err := c.Validate(req); err != nil {
 		return c.JSON(http.StatusBadRequest, BrowseResponse{Error: err.Error()})

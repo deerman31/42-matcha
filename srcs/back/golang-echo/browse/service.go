@@ -36,11 +36,12 @@ func (b *BrowseService) GetBrowseUser(req BrowseRequest, myID int) ([]userInfo, 
 		user.DistanceKm = int(u.DistanceKm)
 		user.CommonTagCount = u.CommonTagCount
 		user.FameRating = u.FameRating
-		imageURI, err := convertImageToDataURI(u.ProfileImagePath1)
-		if err != nil {
-			return nil, err
-		}
-		user.ImageURI = imageURI
+		user.ImagePath = *u.ProfileImagePath1
+		// imageURI, err := convertImageToDataURI(u.ProfileImagePath1)
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// user.ImageURI = imageURI
 		userInfos = append(userInfos, user)
 	}
 

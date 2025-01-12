@@ -8,7 +8,8 @@ type userInfo struct {
 	DistanceKm     int    // 自分と相手との距離
 	CommonTagCount int    // 共通タグの数
 	FameRating     int    // fame_raging
-	ImageURI       string
+	//ImageURI       string
+	ImagePath string
 }
 
 type BrowseResponse struct {
@@ -19,7 +20,7 @@ type BrowseResponse struct {
 type MatchingUser struct {
 	Username          string    `db:"username"`
 	Birthdate         time.Time `db:"birthdate"`
-	Area          string    `db:"area"`
+	Area              string    `db:"area"`
 	ProfileImagePath1 *string   `db:"profile_image_path1"`
 	CommonTagCount    int       `db:"common_tag_count"`
 	DistanceKm        float64   `db:"distance_km"`
@@ -44,18 +45,15 @@ const (
 
 type BrowseRequest struct {
 	AgeRange struct {
-		Min int `json:"min" validate:"required,gte=18"`              // 最小年齢バリデーション追加
-		Max int `json:"max" validate:"required,lte=100,gtfield=Min"` // 最大年齢バリデーション追加
-	} `json:"age_range" validate:"required"`
+		Min int `json:"min"` // 最小年齢バリデーション追加
+		Max int `json:"max"` // 最大年齢バリデーション追加
+	} `json:"age_range" validate:"required,age_range"`
 	DistanceRange struct {
-		Min int `json:"min" validate:"required,gte=0"`
-		Max int `json:"max" validate:"required,lte=100,gtfield=Min"` //最大100kmまで
-	} `json:"distance_range" validate:"required"`
-	MinCommonTags int            `json:"min_common_tags" validate:"required,gte=0,lte=5"`
-	MinFameRating int            `json:"min_fame_rating" validate:"required,gte=0,lte=5"`
+		Min int `json:"min"`
+		Max int `json:"max"` //最大100kmまで
+	} `json:"distance_range" validate:"required,distance_range"`
+	MinCommonTags int            `json:"min_common_tags" validate:"min_common_tags"`
+	MinFameRating int            `json:"min_fame_rating" validate:"min_common_tags"`
 	SortOption    SortOptionType `json:"sort_option" validate:"required,oneof=age distance fame_rating tag"`
-	SortOrder     SortOrder      `json:"sort_order" validate:"required,oneof=0 1"`
+	SortOrder     SortOrder      `json:"sort_order" validate:"oneof=0 1"`
 }
-
-// filter.MinCommonTags
-// filter.MinFameRating,
