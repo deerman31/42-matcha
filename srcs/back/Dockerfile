@@ -55,6 +55,18 @@ RUN mkdir -p /home/appuser/uploads/images5
 RUN mkdir -p /home/appuser/uploads/default_image
 COPY ./default_image/napoleon.png /home/appuser/uploads/default_image
 
+COPY ./default_image/male1.png /home/appuser/uploads/images1
+COPY ./default_image/male2.png /home/appuser/uploads/images1
+COPY ./default_image/male3.png /home/appuser/uploads/images1
+COPY ./default_image/male4.png /home/appuser/uploads/images1
+COPY ./default_image/male5.png /home/appuser/uploads/images1
+COPY ./default_image/female1.png /home/appuser/uploads/images1
+COPY ./default_image/female2.png /home/appuser/uploads/images1
+COPY ./default_image/female3.png /home/appuser/uploads/images1
+COPY ./default_image/female4.png /home/appuser/uploads/images1
+COPY ./default_image/female5.png /home/appuser/uploads/images1
+
+
 EXPOSE 3000
 
 # コンテナ起動時に実行されるコマンド

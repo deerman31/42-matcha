@@ -8,6 +8,7 @@ import (
 	"golang-echo/gps"
 	"golang-echo/middle"
 	"golang-echo/profile"
+	"golang-echo/research"
 	"golang-echo/tags"
 	"golang-echo/users"
 	"net/http"
@@ -25,11 +26,14 @@ func routing(e *echo.Echo, db *sql.DB) {
 	g.POST("/register", auth.Register(db))
 	g.POST("/login", auth.Login(db))
 	g.POST("/logout", auth.Logout(db))
+	//test用
+	//dev.DevRoutes(g, db)
 
 	protected := e.Group("/api")
 	protected.Use(middle.JWTMiddleware())
 	users.UserRoutes(protected, db)
 	browse.BrowseRoutes(protected, db)
+	research.ResearchRoutes(protected, db)
 
 	tags.TagRoutes(protected, db)
 	gps.GpsRoutes(protected, db)

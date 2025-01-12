@@ -1,4 +1,4 @@
-package browse
+package research
 
 import "time"
 
@@ -8,11 +8,10 @@ type userInfo struct {
 	DistanceKm     int    // 自分と相手との距離
 	CommonTagCount int    // 共通タグの数
 	FameRating     int    // fame_raging
-	//ImageURI       string
-	ImagePath string
+	ImageURI       string
 }
 
-type BrowseResponse struct {
+type ResearchResponse struct {
 	UserInfos []userInfo `json:"user_infos,omitempty"`
 	Error     string     `json:"error,omitempty"`
 }
@@ -43,17 +42,20 @@ const (
 	Ascending
 )
 
-type BrowseRequest struct {
-	AgeRange struct {
-		Min int `json:"min"` // 最小年齢バリデーション追加
-		Max int `json:"max"` // 最大年齢バリデーション追加
-	} `json:"age_range" validate:"required,age_range"`
-	DistanceRange struct {
-		Min int `json:"min"`
-		Max int `json:"max"` //最大100kmまで
-	} `json:"distance_range" validate:"required,distance_range"`
-	MinCommonTags int            `json:"min_common_tags" validate:"min_common_tags"`
-	MinFameRating int            `json:"min_fame_rating" validate:"min_common_tags"`
-	SortOption    SortOptionType `json:"sort_option" validate:"required,oneof=age distance fame_rating tag"`
-	SortOrder     SortOrder      `json:"sort_order" validate:"oneof=0 1"`
+type ResearchRequest struct {
+	AgeRange *struct {
+		Min int `json:"min" validate:"required,gte=18"`              // 最小年齢バリデーション追加
+		Max int `json:"max" validate:"required,lte=100,gtfield=Min"` // 最大年齢バリデーション追加
+	} `json:"age_range,omitempty"`
+	DistanceRange *struct {
+		Min int `json:"min" validate:"required,gte=0"`
+		Max int `json:"max" validate:"required,lte=100,gtfield=Min"` //最大100kmまで
+	} `json:"distance_range,omitempty"`
+	FameRatingRange *struct {
+		Min int `json:"min" validate:"required,gte=0"`
+		Max int `json:"max" validate:"required,lte=5,gtfield=Min"`
+	} `json:"fame_rating_range,omitempty"`
+	Tags       []string       `json:"tags,omitempty"`
+	SortOption SortOptionType `json:"sort_option" validate:"required,oneof=age distance fame_rating"`
+	SortOrder  SortOrder      `json:"sort_order" validate:"required,oneof=0 1"`
 }

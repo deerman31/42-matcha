@@ -36,7 +36,6 @@ type InitSetUserInfoRequest struct {
 	LastName  string `json:"lastname" validate:"required,name"`
 	FirstName string `json:"firstname" validate:"required,name"`
 	BirthDate string `json:"birthdate" validate:"required,birthdate"`
-	//IsGpsEnabled bool   `json:"isGpsEnabled"`
 	Gender    string `json:"gender" validate:"required,oneof=male female"`
 	Sexuality string `json:"sexuality" validate:"required,oneof=male female male/female"`
 	Area      string `json:"area" validate:"required,area"`

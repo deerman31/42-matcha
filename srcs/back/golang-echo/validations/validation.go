@@ -13,19 +13,44 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
+func validateMinCommonTags(fl validator.FieldLevel) bool {
+	minCommonTags := fl.Field().Int()
+	if minCommonTags < 0 || minCommonTags > 5 {
+		return false
+	}
+	return true
+}
+
+// min_fame_rating
+func validateMinFameRating(fl validator.FieldLevel) bool {
+	minFameRating := fl.Field().Int()
+	if minFameRating < 0 || minFameRating > 5 {
+		return false
+	}
+	return true
+}
+
 func NewValidator() *CustomValidator {
 	v := validator.New()
 
 	v.RegisterValidation("username", validateUsername)
 	v.RegisterValidation("password", validatePassword)
 	v.RegisterValidation("repassword", validatePassword)
-	//v.RegisterValidation("last_name", validateName)
 	v.RegisterValidation("name", validateName)
 	v.RegisterValidation("area", validateArea)
 	v.RegisterValidation("birthdate", validateBirthdate)
 	v.RegisterValidation("self_intro", validateSelfIntro)
 
 	v.RegisterValidation("tag", validateTag)
+
+	v.RegisterValidation("age_range", validateAgeRange)
+	v.RegisterValidation("distance_range", validateDistanceRange)
+
+	v.RegisterValidation("min_common_tags", validateMinCommonTags)
+	v.RegisterValidation("min_fame_rating", validateMinFameRating)
+
+	//v.RegisterValidation("distance_range", validateDistanceRange)
+
 	return &CustomValidator{validator: v}
 }
 
@@ -66,6 +91,14 @@ func formatValidationError(err error) error {
 			errMsgs = append(errMsgs, "Invalid self intro")
 		case "tag":
 			errMsgs = append(errMsgs, "Invalid tag")
+		case "age_range":
+			errMsgs = append(errMsgs, "Invalid age_range")
+		case "distance_range":
+			errMsgs = append(errMsgs, "Invalid distance_range")
+		case "min_common_tags":
+			errMsgs = append(errMsgs, "Invalid min_common_tags")
+		case "min_fame_rating":
+			errMsgs = append(errMsgs, "Invalid min_fame_rating")
 		}
 	}
 
