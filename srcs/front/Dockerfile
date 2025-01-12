@@ -2,13 +2,14 @@ FROM node:23-bullseye-slim
 
 WORKDIR /app
 
-COPY ./vite-react/package*.json ./
+
+COPY ./remix-sample/package*.json ./
 
 # 依存関係のインストール
 RUN npm install
 
 # ソースコードをコピー
-COPY ./vite-react/ .
+COPY ./remix-sample/ .
 
 RUN npm run build
 
