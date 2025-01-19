@@ -7,6 +7,7 @@ import (
 	"golang-echo/friend"
 	"golang-echo/gps"
 	"golang-echo/middle"
+	myprofile "golang-echo/my_profile"
 	"golang-echo/profile"
 	"golang-echo/research"
 	"golang-echo/tags"
@@ -23,11 +24,7 @@ func helloWorldHandler(c echo.Context) error {
 func routing(e *echo.Echo, db *sql.DB) {
 	g := e.Group("/api")
 	g.GET("", helloWorldHandler)
-	g.POST("/register", auth.Register(db))
-	g.POST("/login", auth.Login(db))
-	g.POST("/logout", auth.Logout(db))
-	//test用
-	//dev.DevRoutes(g, db)
+	auth.AuthRoutes(g, db)
 
 	protected := e.Group("/api")
 	protected.Use(middle.JWTMiddleware())
@@ -41,4 +38,5 @@ func routing(e *echo.Echo, db *sql.DB) {
 	profile.ProfileRoutes(protected, db)
 	friend.FriendRoutes(protected, db)
 
+	myprofile.MyProfileRoutes(protected, db)
 }

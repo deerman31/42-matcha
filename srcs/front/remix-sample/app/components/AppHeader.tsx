@@ -1,8 +1,20 @@
 // app/components/AppHeader.tsx
-import { Form, Link } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { Heart, User, Users, MessageCircle, LogOut } from "lucide-react";
+import { useFetcher } from "@remix-run/react";
+
 
 export const AppHeader = () => {
+    const fetcher = useFetcher();
+
+    const handleLogout = () => {
+        fetcher.submit(null, {
+            method: "post",
+            action: "/logout"  // 別ルートのactionを指定
+        });
+    }
+
+
     return (
         <header className="bg-white shadow-md">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,21 +26,21 @@ export const AppHeader = () => {
                         </Link>
                         <div className="hidden sm:flex sm:items-center sm:space-x-4">
                             <Link
-                                to="/app/matches"
+                                to="/map"
                                 className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 px-3 py-2"
                             >
                                 <Users className="w-5 h-5" />
                                 <span>Matches</span>
                             </Link>
                             <Link
-                                to="/app/messages"
+                                to="/my-profile"
                                 className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 px-3 py-2"
                             >
                                 <MessageCircle className="w-5 h-5" />
                                 <span>Messages</span>
                             </Link>
                             <Link
-                                to="/app/profile"
+                                to="/my-profile"
                                 className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 px-3 py-2"
                             >
                                 <User className="w-5 h-5" />
@@ -37,15 +49,13 @@ export const AppHeader = () => {
                         </div>
                     </div>
                     <div className="flex items-center">
-                        <Form action="/auth/logout" method="post">
-                            <button
-                                type="submit"
-                                className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 px-3 py-2"
-                            >
-                                <LogOut className="w-5 h-5" />
-                                <span>Logout</span>
-                            </button>
-                        </Form>
+                        <button onClick={handleLogout}
+                            type="button"
+                            className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 px-3 py-2"
+                        >
+                            <LogOut className="w-5 h-5" />
+                            <span>Logout</span>
+                        </button>
                     </div>
                 </div>
             </nav>

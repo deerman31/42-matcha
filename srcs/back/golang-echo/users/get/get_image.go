@@ -14,6 +14,7 @@ import (
 func getImagePath(tx *sql.Tx, userID int, pathNum int) (string, error) {
 	var imagePath sql.NullString
 	query := fmt.Sprintf("SELECT profile_image_path%d FROM user_image WHERE user_id = $1", pathNum)
+
 	err := tx.QueryRow(query, userID).Scan(&imagePath)
 	if err != nil && err != sql.ErrNoRows {
 		return "", err

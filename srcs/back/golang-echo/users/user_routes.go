@@ -13,7 +13,7 @@ func UserRoutes(protected *echo.Group, db *sql.DB) {
 	user := protected.Group("/users")
 
 	setter := user.Group("/set")
-	setter.POST("/user_info", set.InitSetUserInfo(db))
+	setter.POST("/user-info", set.InitSetUserInfo(db))
 
 	setter.PATCH("/username", set.SetUserName(db))
 	setter.PATCH("/email", set.SetEmail(db))
