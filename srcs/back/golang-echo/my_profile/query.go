@@ -34,14 +34,21 @@ GROUP BY
 
 	// PostGISのgeography型からポイントを取得するクエリ
 	getUserLocationQuery = `
-    SELECT 
-        ST_Y(location_alternative::geometry) as latitude,
-        ST_X(location_alternative::geometry) as longitude,
-        is_gps
-    FROM 
-        user_location 
-    WHERE 
-        user_id = $1`
+SELECT 
+    CASE 
+        WHEN is_gps = true THEN ST_Y(location::geometry)
+        ELSE ST_Y(location_alternative::geometry)
+    END as latitude,
+    CASE 
+        WHEN is_gps = true THEN ST_X(location::geometry)
+        ELSE ST_X(location_alternative::geometry)
+    END as longitude,
+    is_gps
+FROM 
+    user_location 
+WHERE 
+    user_id = $1
+    `
 
 	// 月間プロフィール閲覧数を取得するクエリ
 	getMonthlyProfileViewsQuery = `

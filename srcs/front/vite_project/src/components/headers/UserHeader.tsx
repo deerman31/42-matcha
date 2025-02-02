@@ -16,7 +16,7 @@ const UserHeader: React.FC = () => {
             <Link to="/home">Home</Link>
           </li>
           <li>
-            <Link to="/register">Register</Link>
+            <Link to="/my-profile">MyProfile</Link>
           </li>
         </ul>
       </nav>

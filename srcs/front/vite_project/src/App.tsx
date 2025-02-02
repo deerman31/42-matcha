@@ -13,6 +13,7 @@ import AuthLayout from "./components/layout/AuthLayout.tsx";
 import UserLayout from "./components/layout/UserLayout.tsx";
 
 import Home from "./pages/User/Home/Home.tsx";
+import MyProfile from "./pages/User/MyProfile/MyProfile.tsx";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ const App: React.FC = () => {
 
         <Route element={<UserLayout />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/my-profile" element={<MyProfile />} />
         </Route>
       </Routes>
 

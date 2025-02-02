@@ -12,3 +12,24 @@ export interface LoginResponse {
 export interface ErrorResponse {
   error: string;
 }
+
+export interface MyInfo {
+  username: string;
+  email: string;
+  lastname: string;
+  firstname: string;
+  birthdate: string;
+  gender: string;
+  sexuality: string;
+  area: string;
+  self_intro: string;
+  tags: string[];
+  is_gps: boolean;
+  latitude: number;
+  longitude: number;
+  fame_rating: number;
+}
+
+export interface MyProfileResponse {
+  my_info: MyInfo;
+}
