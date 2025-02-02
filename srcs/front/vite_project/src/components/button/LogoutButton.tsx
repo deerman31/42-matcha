@@ -46,9 +46,9 @@ export const Logout: React.FC = () => {
   };
 
   return (
-    <div className="button-container">
+    <div className="logout-button-container">
       <button
-        className="submit-button"
+        className="logout-submit-button"
         onClick={handleClick}
         disabled={isLoading}
       >
@@ -56,13 +56,13 @@ export const Logout: React.FC = () => {
       </button>
 
       {response && (
-        <div className="response-message">
+        <div className="logout-response-message">
           Response: {response}
         </div>
       )}
 
       {error && (
-        <div className="error-message">
+        <div className="logout-error-message">
           Error: {error}
         </div>
       )}

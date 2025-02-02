@@ -74,7 +74,7 @@ func (m *MyProfileService) GetMyProfile(myID int) (myInfo, error) {
 		userInfo.email,
 		userInfo.lastName,
 		userInfo.firstName,
-		userInfo.birthDate,
+		userInfo.birthDate[:10],
 		userInfo.gender,
 		userInfo.sexuality,
 		userInfo.area,

@@ -1,10 +1,16 @@
 import { useEffect } from "react";
 import { getToken } from "../../utils/auth.ts";
+import { useLocationContext } from "./LocationContextType.tsx";
 
 const LocationService = () => {
   const token = getToken();
+  const { isTrackingEnabled } = useLocationContext();
 
   useEffect(() => {
+    if (!isTrackingEnabled) {
+      return; // トラッキングが無効な場合は何もしない
+    }
+
     // 位置情報をサーバーに送信
     const sendLocationToServer = async (latitude: number, longitude: number) => {
       try {

@@ -12,8 +12,9 @@ import Footer from "./components/footer/Footer.tsx";
 import AuthLayout from "./components/layout/AuthLayout.tsx";
 import UserLayout from "./components/layout/UserLayout.tsx";
 
-import Home from "./pages/User/Home/Home.tsx";
 import MyProfile from "./pages/User/MyProfile/MyProfile.tsx";
+import Setting from "./pages/User/Setting/Setting.tsx";
+import ChangeUsername from "./pages/User/Setting/ChangeUsername.tsx";
 
 const App: React.FC = () => {
   return (
@@ -28,8 +29,9 @@ const App: React.FC = () => {
         </Route>
 
         <Route element={<UserLayout />}>
-          <Route path="/home" element={<Home />} />
           <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/setting" element={<Setting />} />
+          <Route path="/change-username" element={<ChangeUsername />} />
         </Route>
       </Routes>
 

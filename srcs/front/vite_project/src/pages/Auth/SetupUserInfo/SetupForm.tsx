@@ -146,7 +146,7 @@ const SetupForm = () => {
       // 成功メッセージを表示した後、短いディレイを設けてからリダイレクト
 
       setTimeout(() => {
-        navigate("/home", {
+        navigate("/my-profile", {
           // 必要に応じて状態を渡すことができます
           state: { from: "registration", message: data.message },
         });

@@ -76,7 +76,7 @@ const LoginForm = () => {
       // tokenをsave
       saveToken(data.access_token);
 
-      const redirectURL = data.is_preparation ? "/home" : "/setup-user-info";
+      const redirectURL = data.is_preparation ? "/my-profile" : "/setup-user-info";
 
       // 成功メッセージを表示した後、短いディレイを設けてからリダイレクト
       setTimeout(() => {
@@ -98,12 +98,12 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2 className="form-title">Login</h2>
+    <div className="login-form-container">
+      <h2 className="login-form-title">Login</h2>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username" className="form-label">
+        <div className="login-form-group">
+          <label htmlFor="username" className="login-form-label">
             UserName
           </label>
           <input
@@ -113,12 +113,12 @@ const LoginForm = () => {
             value={formData.username}
             onChange={handleChange}
             required
-            className="form-input"
+            className="login-form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password" className="form-label">
+        <div className="login-form-group">
+          <label htmlFor="password" className="login-form-label">
             Password
           </label>
           <input
@@ -128,14 +128,14 @@ const LoginForm = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="form-input"
+            className="login-form-input"
           />
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="submit-button"
+          className="login-submit-button"
         >
           {isSubmitting ? "Login中..." : "Login"}
         </button>
@@ -143,7 +143,7 @@ const LoginForm = () => {
 
       {submitStatus.message && (
         <div
-          className={`alert ${
+          className={`login-alert ${
             submitStatus.type === "success" ? "alert-success" : "alert-error"
           }`}
           role="alert"

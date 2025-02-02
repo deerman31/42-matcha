@@ -96,12 +96,12 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2 className="form-title">Register</h2>
+    <div className="register-form-container">
+      <h2 className="register-form-title">Register</h2>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username" className="form-label">
+        <div className="register-form-group">
+          <label htmlFor="username" className="register-form-label">
             UserName
           </label>
           <input
@@ -111,12 +111,12 @@ const RegisterForm = () => {
             value={formData.username}
             onChange={handleChange}
             required
-            className="form-input"
+            className="register-form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="email" className="form-label">
+        <div className="register-form-group">
+          <label htmlFor="email" className="register-form-label">
             Email
           </label>
           <input
@@ -126,12 +126,12 @@ const RegisterForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="form-input"
+            className="register-form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password" className="form-label">
+        <div className="register-form-group">
+          <label htmlFor="password" className="register-form-label">
             Password
           </label>
           <input
@@ -141,12 +141,12 @@ const RegisterForm = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="form-input"
+            className="register-form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="repassword" className="form-label">
+        <div className="register-form-group">
+          <label htmlFor="repassword" className="register-form-label">
             RePassword
           </label>
           <input
@@ -156,14 +156,14 @@ const RegisterForm = () => {
             value={formData.repassword}
             onChange={handleChange}
             required
-            className="form-input"
+            className="register-form-input"
           />
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="submit-button"
+          className="register-submit-button"
         >
           {isSubmitting ? "Register中..." : "Register"}
         </button>
@@ -171,7 +171,7 @@ const RegisterForm = () => {
 
       {submitStatus.message && (
         <div
-          className={`alert ${
+          className={`register-alert ${
             submitStatus.type === "success" ? "alert-success" : "alert-error"
           }`}
           role="alert"

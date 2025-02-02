@@ -3,6 +3,7 @@ import "./MyProfile.css";
 import { ErrorResponse, MyProfileResponse } from "../../../types/api.ts";
 import { getToken } from "../../../utils/auth.ts";
 import LocationMap from "../../../components/LocationMap/LocationMap.tsx";
+import { useLocationContext } from "../../../components/LocationService/LocationContextType.tsx";
 
 const MyProfile: React.FC = () => {
   const [profileData, setProfileData] = useState<MyProfileResponse | null>(
@@ -10,6 +11,7 @@ const MyProfile: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { setTrackingEnabled } = useLocationContext();
 
   const token = getToken();
 
@@ -57,6 +59,11 @@ const MyProfile: React.FC = () => {
 
   const { my_info: profile } = profileData;
 
+  console.log("profile.is_gps:", profile.is_gps)
+  setTrackingEnabled(profile.is_gps);
+
+  const is_gps_string = profile.is_gps ? "OK":"NG"
+
   return (
     <div className="profile-container">
       <h1 className="profile-title">プロフィール</h1>
@@ -99,6 +106,11 @@ const MyProfile: React.FC = () => {
           <label>エリア:</label>
           <span>{profile.area}</span>
         </div>
+        <div className="profile-field">
+          <label>位置情報許可</label>
+          <span>{is_gps_string}</span>
+        </div>
+
         <div className="profile-field">
           <label>位置情報:</label>
           <span>緯度: {profile.latitude}, 経度: {profile.longitude}</span>

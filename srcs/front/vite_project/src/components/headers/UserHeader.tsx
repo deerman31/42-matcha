@@ -7,16 +7,16 @@ import { Logout } from "../button/LogoutButton.tsx";
 const UserHeader: React.FC = () => {
   return (
     <header className="user_header">
-      <Link to="/home" className="user_header_logo">
+      <Link to="/my-profile" className="user_header_logo">
         User
       </Link>
       <nav>
         <ul className="nav-links">
           <li>
-            <Link to="/home">Home</Link>
+            <Link to="/my-profile">MyProfile</Link>
           </li>
           <li>
-            <Link to="/my-profile">MyProfile</Link>
+            <Link to="/setting">Setting</Link>
           </li>
         </ul>
       </nav>
