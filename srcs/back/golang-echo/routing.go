@@ -20,7 +20,6 @@ import (
 func helloWorldHandler(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!")
 }
-
 func routing(e *echo.Echo, db *sql.DB) {
 	g := e.Group("/api")
 	g.GET("", helloWorldHandler)

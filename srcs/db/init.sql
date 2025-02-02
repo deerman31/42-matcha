@@ -384,6 +384,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 -- テストユーザー生成の関数定義
 CREATE OR REPLACE FUNCTION generate_test_users() RETURNS void AS $$
 DECLARE
