@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import "./LoginForm.css";
 
-import { LoginResponse,ErrorResponse } from "../../../types/api.ts";
+import { ErrorResponse, LoginResponse } from "../../../types/api.ts";
 
 import { saveToken } from "../../../utils/auth.ts";
 
@@ -59,9 +59,8 @@ const LoginForm = () => {
         body: JSON.stringify(formData),
       });
 
-
       if (!response.ok) {
-        const errorData:ErrorResponse = await response.json();
+        const errorData: ErrorResponse = await response.json();
         throw new Error(errorData.error || "送信に失敗しました");
       }
       const data: LoginResponse = await response.json();
@@ -74,11 +73,10 @@ const LoginForm = () => {
       // フォームをリセット
       setFormData(initialFormState);
 
-
       // tokenをsave
       saveToken(data.access_token);
 
-      const redirectURL = data.is_preparation ? "/register" : "/home";
+      const redirectURL = data.is_preparation ? "/home" : "/setup-user-info";
 
       // 成功メッセージを表示した後、短いディレイを設けてからリダイレクト
       setTimeout(() => {
@@ -87,8 +85,6 @@ const LoginForm = () => {
           state: { from: "registration", message: "Login success" },
         });
       }, 1000); // 1.0秒後にリダイレクト
-
-
     } catch (error) {
       setSubmitStatus({
         type: "error",

@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import "./RegisterForm.css";
 import { useNavigate } from "npm:react-router-dom";
 
-import { RegisterResponse, ErrorResponse } from "../../../types/api.ts";
+import { ErrorResponse, Response } from "../../../types/api.ts";
 
 interface FormData {
   username: string;
@@ -61,13 +61,12 @@ const RegisterForm = () => {
         body: JSON.stringify(formData),
       });
 
-
       if (!response.ok) {
-        const errorData:ErrorResponse = await response.json();
+        const errorData: ErrorResponse = await response.json();
         throw new Error(errorData.error || "送信に失敗しました");
       }
 
-      const data: RegisterResponse = await response.json();
+      const data: Response = await response.json();
 
       setSubmitStatus({
         type: "success",

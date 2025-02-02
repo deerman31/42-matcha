@@ -1,8 +1,7 @@
 // src/types/api.ts として型定義を分離
 
-export interface RegisterResponse {
-  message?: string;
-  error?: string;
+export interface Response {
+  message: string;
 }
 
 export interface LoginResponse {
