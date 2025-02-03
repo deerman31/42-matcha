@@ -1,21 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "./LocationMap.css";
+import "./ShowLocationMap.css";
 
-interface LocationMapProps {
+interface ShowLocationMapProps {
   latitude: number;
   longitude: number;
   zoom?: number;
   className?: string;
 }
 
-const LocationMap: React.FC<LocationMapProps> = ({
+const ShowLocationMap: React.FC<ShowLocationMapProps> = ({
   latitude,
   longitude,
   zoom = 13,
   className = "",
-}: LocationMapProps) => {
+}: ShowLocationMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
@@ -75,4 +75,4 @@ const LocationMap: React.FC<LocationMapProps> = ({
   );
 };
 
-export default LocationMap;
+export default ShowLocationMap;

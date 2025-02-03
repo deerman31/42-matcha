@@ -1,13 +1,15 @@
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
+
 import { ErrorResponse, Response } from "../../../../types/api.ts";
-
-import AreaPicker from "../../../../components/AreaPicker.tsx";
-
 
 import { getToken } from "../../../../utils/auth.ts";
 
+import IsGpsPicker from "../IsGps/IsGpsPicker.tsx";
+
+import { useLocationContext } from "../../../../components/LocationService/LocationContextType.tsx";
+
 interface FormData {
-  area: string;
+  isGpsEnabled: boolean;
 }
 
 // 送信状態の型定義
@@ -16,11 +18,12 @@ interface SubmitStatus {
   message: string;
 }
 
-const ChangeArea = () => {
+const ChangeIsGps = () => {
+  const {  setTrackingEnabled } = useLocationContext();
 
   // フォームの初期状態
   const initialFormState: FormData = {
-    area: "Hokkaido",
+    isGpsEnabled: true,
   };
   // 状態管理
   const [formData, setFormData] = useState<FormData>(initialFormState);
@@ -30,22 +33,36 @@ const ChangeArea = () => {
     message: "",
   });
 
+  // 入力変更ハンドラー
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ): void => {
+    const { name, value } = e.target;
+    setFormData((prev: FormData) => ({
+      ...prev,
+    //   [name]: value,
+      //[name]: value === 'true', // 文字列を boolean に変換
+      [name]: Boolean(value),  // 単純にBooleanに変換
+    }));
+  };
+
   // フォーム送信ハンドラー
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus({ type: "", message: "" });
 
+
     try {
       const token = getToken();
 
-      const response = await fetch("/api/users/set/area", {
+      const response = await fetch("/api/gps/set/is-gps", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({value: formData.area} ),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -60,8 +77,9 @@ const ChangeArea = () => {
         message: data.message || "登録が完了しました！",
       });
 
-      // フォームをリセット
-      setFormData(initialFormState);
+      setTrackingEnabled(formData.isGpsEnabled);
+
+
     } catch (error) {
       setSubmitStatus({
         type: "error",
@@ -74,28 +92,19 @@ const ChangeArea = () => {
     }
   };
 
-
-
-  const handleAreaChange = (area: string): void => {
-    setFormData((prev: FormData) => ({
-      ...prev,
-      area: area,
-    }));
-  };
-
   return (
     <div className="form-container">
-      <h2 className="form-title">Change Area</h2>
+      <h2 className="form-title">Init</h2>
       <form onSubmit={handleSubmit}>
+
+
         <div>
-          <label htmlFor="area">
-            Area
+          <label htmlFor="isgps">
+            IsGps
           </label>
-          <AreaPicker
-            value={formData.area}
-            onChange={handleAreaChange} // 専用のハンドラーを使用
-          />
+          <IsGpsPicker value={formData.isGpsEnabled} onChange={handleChange} />
         </div>
+
 
         <button
           type="submit"
@@ -119,6 +128,6 @@ const ChangeArea = () => {
       )}
     </div>
   );
-};
 
-export default ChangeArea;
+};
+export default ChangeIsGps;

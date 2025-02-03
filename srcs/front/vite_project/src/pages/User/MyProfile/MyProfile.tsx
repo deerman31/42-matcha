@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./MyProfile.css";
 import { ErrorResponse, MyProfileResponse } from "../../../types/api.ts";
 import { getToken } from "../../../utils/auth.ts";
-import LocationMap from "../../../components/LocationMap/LocationMap.tsx";
+import ShowLocationMap from "../../../components/LocationMap/ShowLocationMap.tsx";
 import { useLocationContext } from "../../../components/LocationService/LocationContextType.tsx";
 
 const MyProfile: React.FC = () => {
@@ -33,6 +33,9 @@ const MyProfile: React.FC = () => {
         }
         const data: MyProfileResponse = await response.json();
         setProfileData(data);
+
+        setTrackingEnabled(data.my_info.is_gps);
+
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "予期せぬエラーが発生しました",
@@ -59,8 +62,7 @@ const MyProfile: React.FC = () => {
 
   const { my_info: profile } = profileData;
 
-  console.log("profile.is_gps:", profile.is_gps);
-  setTrackingEnabled(profile.is_gps);
+  // setTrackingEnabled(profile.is_gps);
 
   const is_gps_string = profile.is_gps ? "OK" : "NG";
 
@@ -115,7 +117,7 @@ const MyProfile: React.FC = () => {
           <label>位置情報:</label>
           <span>緯度: {profile.latitude}, 経度: {profile.longitude}</span>
         </div>
-        <LocationMap
+        <ShowLocationMap
           latitude={profile.latitude}
           longitude={profile.longitude}
           zoom={14}

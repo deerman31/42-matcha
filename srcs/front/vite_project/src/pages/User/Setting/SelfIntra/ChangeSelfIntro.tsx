@@ -1,13 +1,11 @@
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { ErrorResponse, Response } from "../../../../types/api.ts";
-
-import AreaPicker from "../../../../components/AreaPicker.tsx";
-
-
 import { getToken } from "../../../../utils/auth.ts";
 
+import "./ChangeSelfIntro.css";
+
 interface FormData {
-  area: string;
+  self_intro: string;
 }
 
 // 送信状態の型定義
@@ -16,11 +14,10 @@ interface SubmitStatus {
   message: string;
 }
 
-const ChangeArea = () => {
-
+const ChangeSelfIntro = () => {
   // フォームの初期状態
   const initialFormState: FormData = {
-    area: "Hokkaido",
+    self_intro: "",
   };
   // 状態管理
   const [formData, setFormData] = useState<FormData>(initialFormState);
@@ -29,6 +26,17 @@ const ChangeArea = () => {
     type: "",
     message: "",
   });
+
+  // 入力変更ハンドラー
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ): void => {
+    const { name, value } = e.target;
+    setFormData((prev: FormData) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   // フォーム送信ハンドラー
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -39,13 +47,13 @@ const ChangeArea = () => {
     try {
       const token = getToken();
 
-      const response = await fetch("/api/users/set/area", {
+      const response = await fetch("/api/users/set/self-intro", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({value: formData.area} ),
+        body: JSON.stringify({value: formData.self_intro}),
       });
 
       if (!response.ok) {
@@ -74,35 +82,31 @@ const ChangeArea = () => {
     }
   };
 
-
-
-  const handleAreaChange = (area: string): void => {
-    setFormData((prev: FormData) => ({
-      ...prev,
-      area: area,
-    }));
-  };
-
   return (
     <div className="form-container">
-      <h2 className="form-title">Change Area</h2>
+      <h2 className="form-title">Change SelfIntro</h2>
+
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="area">
-            Area
+        <div className="form-group">
+          <label htmlFor="self_intro" className="form-label">
+            SelfIntro
           </label>
-          <AreaPicker
-            value={formData.area}
-            onChange={handleAreaChange} // 専用のハンドラーを使用
+          <input
+            type="text"
+            id="self_intro"
+            name="self_intro"
+            value={formData.self_intro}
+            onChange={handleChange}
+            required
+            className="form-input"
           />
         </div>
-
         <button
           type="submit"
           disabled={isSubmitting}
           className="submit-button"
         >
-          {isSubmitting ? "送信中..." : "送信"}
+          {isSubmitting ? "更新中..." : "更新"}
         </button>
       </form>
 
@@ -121,4 +125,4 @@ const ChangeArea = () => {
   );
 };
 
-export default ChangeArea;
+export default ChangeSelfIntro;

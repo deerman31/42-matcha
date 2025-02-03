@@ -31,6 +31,15 @@ const Setting: React.FC = () => {
         <Link to="/change-area" className="nav-button">
           Area
         </Link>
+        <Link to="/change-is-gps" className="nav-button">
+          IsGps
+        </Link>
+        <Link to="/change-map" className="nav-button">
+          Map
+        </Link>
+        <Link to="/change-self-intro" className="nav-button">
+          SelfIntro
+        </Link>
       </div>
     </div>
   );

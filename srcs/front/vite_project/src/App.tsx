@@ -23,8 +23,15 @@ import ChangeGender from "./pages/User/Setting/Gender/ChangeGender.tsx";
 import ChangeSexuality from "./pages/User/Setting/Sexuality/ChangeSexuality.tsx";
 import ChangeArea from "./pages/User/Setting/Area/ChangeArea.tsx";
 
+import ChangeIsGps from "./pages/User/Setting/IsGps/IsGps.tsx";
+import InteractiveLocationMap from "./pages/User/Setting/Map/InteractiveLocationMap.tsx";
+import ChangeSelfIntro from "./pages/User/Setting/SelfIntra/ChangeSelfIntro.tsx";
+
+
 const App: React.FC = () => {
   return (
+
+
     <Router>
       <Routes>
         <Route element={<AuthLayout />}>
@@ -45,12 +52,16 @@ const App: React.FC = () => {
           <Route path="/change-gender" element={<ChangeGender />} />
           <Route path="/change-sexuality" element={<ChangeSexuality />} />
           <Route path="/change-area" element={<ChangeArea />} />
+          <Route path="/change-is-gps" element={<ChangeIsGps />} />
+          <Route path="/change-map" element={<InteractiveLocationMap />} />
+          <Route path="/change-self-intro" element={<ChangeSelfIntro />} />
 
         </Route>
       </Routes>
 
       <Footer />
     </Router>
+
   );
 };
 
