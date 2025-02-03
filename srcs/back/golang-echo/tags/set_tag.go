@@ -1,7 +1,7 @@
 package tags
 
 import (
-	"database/sql"
+	"errors"
 	"golang-echo/jwt_token"
 	"net/http"
 	"strings"
@@ -15,56 +15,83 @@ const (
 	setTagSuccessMessage = "Tag set successfully"
 )
 
-type setTagRequest struct {
+type SetTagRequest struct {
 	Tag string `json:"tag" validate:"required,tag"`
 }
 
-func SetTag(db *sql.DB) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		claims, ok := c.Get("user").(*jwt_token.Claims)
-		if !ok {
-			return echo.NewHTTPError(http.StatusInternalServerError, "user claims not found")
-		}
-		userID := claims.UserID
-		req := new(setTagRequest)
-		if err := c.Bind(req); err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
-		}
-		// validationをここで行う
-		if err := c.Validate(req); err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
-		}
+type SetTagResponse struct {
+	Message string `json:"message,omitempty"`
+	Error   string `json:"error,omitempty"`
+}
 
-		//TagName := strings.Title(strings.ToLower(req.Tag))
-		TagName := cases.Title(language.Und).String(strings.ToLower(req.Tag))
-
-
-		// トランザクションを開始
-		tx, err := db.Begin()
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not start transaction"})
-		}
-		defer tx.Rollback() // エラーが発生した場合はロールバック
-
-		// tagをtagsに追加
-		if err := addTag(tx, TagName); err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-		}
-		// tagsからtag_idを取得する
-		tagID, err := getTagIDByName(tx, TagName)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-		}
-		// tagIDとuserIDを使って、user_tagに要素を追加
-		if err := addUserTag(tx, userID, tagID); err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-		}
-
-		// トランザクションのコミット
-		if err = tx.Commit(); err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not commit transaction"})
-		}
-		return c.JSON(http.StatusOK, map[string]string{"message": setTagSuccessMessage})
-
+func (t *TagHandler) SetTag(c echo.Context) error {
+	claims, ok := c.Get("user").(*jwt_token.Claims)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError, "user claims not found")
 	}
+	userID := claims.UserID
+
+	req := new(SetTagRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, SetTagResponse{
+			Error: "Invalid request body",
+		})
+	}
+
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest, SetTagResponse{
+			Error: err.Error(),
+		})
+	}
+
+	tagName := cases.Title(language.Und).String(strings.ToLower(req.Tag))
+
+	err := t.service.SetTag(userID, tagName)
+	if err != nil {
+		switch {
+		case errors.Is(err, ErrTransactionFailed):
+			return c.JSON(http.StatusInternalServerError, SetTagResponse{
+				Error: "Internal server error",
+			})
+		case errors.Is(err, ErrTag):
+			return c.JSON(http.StatusInternalServerError, SetTagResponse{
+				Error: "Failed to set tag",
+			})
+		default:
+			return c.JSON(http.StatusInternalServerError, SetTagResponse{
+				Error: "Unexpected error occurred",
+			})
+		}
+	}
+
+	return c.JSON(http.StatusOK, SetTagResponse{
+		Message: setTagSuccessMessage,
+	})
+}
+
+func (t *TagService) SetTag(userID int, tagName string) error {
+	tx, err := t.db.Begin()
+	if err != nil {
+		return ErrTransactionFailed
+	}
+	defer tx.Rollback()
+
+	if err := addTag(tx, tagName); err != nil {
+		return ErrTag
+	}
+
+	tagID, err := getTagIDByName(tx, tagName)
+	if err != nil {
+		return ErrTag
+	}
+
+	if err := addUserTag(tx, userID, tagID); err != nil {
+		return ErrTag
+	}
+
+	if err := tx.Commit(); err != nil {
+		return ErrTransactionFailed
+	}
+
+	return nil
 }
