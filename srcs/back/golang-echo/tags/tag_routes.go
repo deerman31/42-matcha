@@ -15,4 +15,6 @@ func TagRoutes(protected *echo.Group, db *sql.DB) {
 
 	route.POST("/set", handler.SetTag)
 	route.POST("/delete", handler.DeleteTag)
+
+	route.POST("/search", handler.SearchTag)
 }
