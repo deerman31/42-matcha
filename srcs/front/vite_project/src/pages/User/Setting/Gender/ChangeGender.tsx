@@ -49,7 +49,7 @@ const ChangeGender = () => {
     try {
       const token = getToken();
 
-      console.log("value:",formData.gender);
+      console.log("value:", formData.gender);
 
       const response = await fetch("/api/users/set/gender", {
         method: "PATCH",
@@ -57,7 +57,7 @@ const ChangeGender = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({value: formData.gender}),
+        body: JSON.stringify({ value: formData.gender }),
       });
 
       if (!response.ok) {
@@ -90,15 +90,12 @@ const ChangeGender = () => {
     <div className="form-container">
       <h2 className="form-title">Init</h2>
       <form onSubmit={handleSubmit}>
-
-
         <div>
           <label htmlFor="gender">
             Gender
           </label>
           <GenderPicker value={formData.gender} onChange={handleChange} />
         </div>
-
 
         <button
           type="submit"
@@ -122,6 +119,5 @@ const ChangeGender = () => {
       )}
     </div>
   );
-
 };
 export default ChangeGender;

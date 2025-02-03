@@ -1,5 +1,5 @@
 import { getToken } from "../../../../utils/auth.ts";
-import {  FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { ErrorResponse, Response } from "../../../../types/api.ts";
 import DatePicker from "../../../../components/DatePicker.tsx";
 
@@ -43,7 +43,7 @@ const ChangeBirthDate = () => {
     try {
       const token = getToken();
 
-      console.log("value:",formData.value);
+      console.log("value:", formData.value);
 
       const response = await fetch("/api/users/set/birthdate", {
         method: "PATCH",
@@ -116,7 +116,6 @@ const ChangeBirthDate = () => {
       )}
     </div>
   );
-
 };
 
 export default ChangeBirthDate;

@@ -5,6 +5,8 @@ import { getToken } from "../../../utils/auth.ts";
 import ShowLocationMap from "../../../components/LocationMap/ShowLocationMap.tsx";
 import { useLocationContext } from "../../../components/LocationService/LocationContextType.tsx";
 
+import ShowTags from "./ShowTags/ShowTags.tsx";
+
 const MyProfile: React.FC = () => {
   const [profileData, setProfileData] = useState<MyProfileResponse | null>(
     null,
@@ -15,7 +17,7 @@ const MyProfile: React.FC = () => {
 
   const token = getToken();
 
-  useEffect(() => {
+
     const fetchProfile = async () => {
       try {
         const response = await fetch("/api/my-profile", {
@@ -35,7 +37,6 @@ const MyProfile: React.FC = () => {
         setProfileData(data);
 
         setTrackingEnabled(data.my_info.is_gps);
-
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "予期せぬエラーが発生しました",
@@ -44,6 +45,8 @@ const MyProfile: React.FC = () => {
         setIsLoading(false);
       }
     };
+
+  useEffect(() => {
 
     fetchProfile();
   }, []);
@@ -131,12 +134,9 @@ const MyProfile: React.FC = () => {
       </div>
 
       <div className="profile-section">
-        <h2>タグ</h2>
-        <div className="tags">
-          {profile.tags.map((tag: string, index: number) => (
-            <span key={index} className="tag">{tag}</span>
-          ))}
-        </div>
+        <ShowTags
+        tags={profile.tags}
+        refetchTags={fetchProfile} />
       </div>
 
       <div className="profile-section">

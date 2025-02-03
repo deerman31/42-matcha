@@ -26,12 +26,10 @@ import ChangeArea from "./pages/User/Setting/Area/ChangeArea.tsx";
 import ChangeIsGps from "./pages/User/Setting/IsGps/IsGps.tsx";
 import InteractiveLocationMap from "./pages/User/Setting/Map/InteractiveLocationMap.tsx";
 import ChangeSelfIntro from "./pages/User/Setting/SelfIntra/ChangeSelfIntro.tsx";
-
+import TagSearchComponent from "./pages/User/Setting/tag/TagSearchComponent.tsx";
 
 const App: React.FC = () => {
   return (
-
-
     <Router>
       <Routes>
         <Route element={<AuthLayout />}>
@@ -56,12 +54,12 @@ const App: React.FC = () => {
           <Route path="/change-map" element={<InteractiveLocationMap />} />
           <Route path="/change-self-intro" element={<ChangeSelfIntro />} />
 
+          <Route path="/change-tag" element={<TagSearchComponent />} />
         </Route>
       </Routes>
 
       <Footer />
     </Router>
-
   );
 };
 

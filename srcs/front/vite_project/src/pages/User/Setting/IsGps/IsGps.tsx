@@ -19,7 +19,7 @@ interface SubmitStatus {
 }
 
 const ChangeIsGps = () => {
-  const {  setTrackingEnabled } = useLocationContext();
+  const { setTrackingEnabled } = useLocationContext();
 
   // フォームの初期状態
   const initialFormState: FormData = {
@@ -40,9 +40,9 @@ const ChangeIsGps = () => {
     const { name, value } = e.target;
     setFormData((prev: FormData) => ({
       ...prev,
-    //   [name]: value,
+      //   [name]: value,
       //[name]: value === 'true', // 文字列を boolean に変換
-      [name]: Boolean(value),  // 単純にBooleanに変換
+      [name]: Boolean(value), // 単純にBooleanに変換
     }));
   };
 
@@ -51,7 +51,6 @@ const ChangeIsGps = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus({ type: "", message: "" });
-
 
     try {
       const token = getToken();
@@ -78,8 +77,6 @@ const ChangeIsGps = () => {
       });
 
       setTrackingEnabled(formData.isGpsEnabled);
-
-
     } catch (error) {
       setSubmitStatus({
         type: "error",
@@ -96,15 +93,12 @@ const ChangeIsGps = () => {
     <div className="form-container">
       <h2 className="form-title">Init</h2>
       <form onSubmit={handleSubmit}>
-
-
         <div>
           <label htmlFor="isgps">
             IsGps
           </label>
           <IsGpsPicker value={formData.isGpsEnabled} onChange={handleChange} />
         </div>
-
 
         <button
           type="submit"
@@ -128,6 +122,5 @@ const ChangeIsGps = () => {
       )}
     </div>
   );
-
 };
 export default ChangeIsGps;

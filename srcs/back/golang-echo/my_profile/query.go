@@ -21,7 +21,6 @@ WHERE
 
 	query2 = `
 SELECT 
-    ut.user_id,
     ARRAY_AGG(t.tag_name) as tags
 FROM 
     user_tags ut

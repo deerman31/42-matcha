@@ -53,7 +53,7 @@ const ChangeSelfIntro = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({value: formData.self_intro}),
+        body: JSON.stringify({ value: formData.self_intro }),
       });
 
       if (!response.ok) {

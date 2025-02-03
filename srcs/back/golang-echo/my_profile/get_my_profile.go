@@ -40,6 +40,7 @@ func (m *MyProfileService) GetMyProfile(myID int) (myInfo, error) {
 	if err != nil {
 		return myInfo{}, err
 	}
+
 	loc, err := getUserLocation(tx, myID)
 	if err != nil {
 		return myInfo{}, err

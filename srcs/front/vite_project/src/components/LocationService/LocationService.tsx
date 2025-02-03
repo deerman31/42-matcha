@@ -7,7 +7,6 @@ const LocationService = () => {
   const { isTrackingEnabled } = useLocationContext();
 
   useEffect(() => {
-
     if (!isTrackingEnabled) {
       return; // トラッキングが無効な場合は何もしない
     }
@@ -82,7 +81,6 @@ const LocationService = () => {
     // 5分ごとに位置情報を更新
     //const intervalId = setInterval(updateLocation, 5 * 60 * 1000);
     const intervalId = setInterval(updateLocation, 1 * 60 * 1000);
-
 
     // クリーンアップ関数
     return () => {

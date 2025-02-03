@@ -43,7 +43,7 @@ func getUserInfo(tx *sql.Tx, myID int) (userInfo, error) {
 func getMyTags(tx *sql.Tx, myID int) ([]string, error) {
 	var tags []string
 
-	err := tx.QueryRow(query2, myID).Scan((*pq.StringArray)(&tags))
+	err := tx.QueryRow(query2, myID).Scan((pq.Array)(&tags))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return []string{}, nil // ユーザーにタグがない場合は空のスライスを返す

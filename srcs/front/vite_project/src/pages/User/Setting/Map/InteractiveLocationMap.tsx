@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState, FormEvent } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import L from "leaflet";
-import { ErrorResponse,Response } from "../../../../types/api.ts";
+import { ErrorResponse, Response } from "../../../../types/api.ts";
 import { getToken } from "../../../../utils/auth.ts";
 import "leaflet/dist/leaflet.css";
 import "./InteractiveLocationMap.css";
@@ -57,7 +57,7 @@ const InteractiveLocationMap: React.FC<InteractiveLocationMapProps> = ({
     if (!mapInstanceRef.current) {
       mapInstanceRef.current = L.map(mapRef.current).setView(
         [initialLatitude, initialLongitude],
-        zoom
+        zoom,
       );
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -96,7 +96,7 @@ const InteractiveLocationMap: React.FC<InteractiveLocationMapProps> = ({
 
   const updateMarkerPosition = (lat: number, lng: number) => {
     setCoordinates({ latitude: lat, longitude: lng });
-    
+
     if (markerRef.current) {
       markerRef.current.setLatLng([lat, lng]);
       markerRef.current
@@ -132,7 +132,6 @@ const InteractiveLocationMap: React.FC<InteractiveLocationMapProps> = ({
         type: "success",
         message: data.message || "位置情報を更新しました！",
       });
-
     } catch (error) {
       setSubmitStatus({
         type: "error",
@@ -165,8 +164,7 @@ const InteractiveLocationMap: React.FC<InteractiveLocationMapProps> = ({
               setCoordinates({
                 ...coordinates,
                 latitude: parseFloat(e.target.value),
-              })
-            }
+              })}
             step="any"
             required
             className="form-input"
@@ -183,8 +181,7 @@ const InteractiveLocationMap: React.FC<InteractiveLocationMapProps> = ({
               setCoordinates({
                 ...coordinates,
                 longitude: parseFloat(e.target.value),
-              })
-            }
+              })}
             step="any"
             required
             className="form-input"

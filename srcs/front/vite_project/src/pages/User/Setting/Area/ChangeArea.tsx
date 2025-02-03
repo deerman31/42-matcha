@@ -3,7 +3,6 @@ import { ErrorResponse, Response } from "../../../../types/api.ts";
 
 import AreaPicker from "../../../../components/AreaPicker.tsx";
 
-
 import { getToken } from "../../../../utils/auth.ts";
 
 interface FormData {
@@ -17,7 +16,6 @@ interface SubmitStatus {
 }
 
 const ChangeArea = () => {
-
   // フォームの初期状態
   const initialFormState: FormData = {
     area: "Hokkaido",
@@ -45,7 +43,7 @@ const ChangeArea = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({value: formData.area} ),
+        body: JSON.stringify({ value: formData.area }),
       });
 
       if (!response.ok) {
@@ -73,8 +71,6 @@ const ChangeArea = () => {
       setIsSubmitting(false);
     }
   };
-
-
 
   const handleAreaChange = (area: string): void => {
     setFormData((prev: FormData) => ({

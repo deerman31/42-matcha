@@ -40,6 +40,9 @@ const Setting: React.FC = () => {
         <Link to="/change-self-intro" className="nav-button">
           SelfIntro
         </Link>
+        <Link to="/change-tag" className="nav-button">
+          Tag
+        </Link>
       </div>
     </div>
   );

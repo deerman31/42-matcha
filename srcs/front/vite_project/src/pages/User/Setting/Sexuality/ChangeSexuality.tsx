@@ -55,7 +55,7 @@ const ChangeSexuality = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({value: formData.sexuality}),
+        body: JSON.stringify({ value: formData.sexuality }),
       });
 
       if (!response.ok) {
@@ -88,15 +88,12 @@ const ChangeSexuality = () => {
     <div className="form-container">
       <h2 className="form-title">Init</h2>
       <form onSubmit={handleSubmit}>
-
-
         <div>
           <label htmlFor="sexuality">
             Sexuality
           </label>
           <SexualityPicker value={formData.sexuality} onChange={handleChange} />
         </div>
-
 
         <button
           type="submit"
