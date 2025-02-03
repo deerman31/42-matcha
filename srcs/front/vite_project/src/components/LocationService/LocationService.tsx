@@ -12,38 +12,41 @@ const LocationService = () => {
     }
 
     // 位置情報をサーバーに送信
-    const sendLocationToServer = async (latitude: number, longitude: number) => {
+    const sendLocationToServer = async (
+      latitude: number,
+      longitude: number,
+    ) => {
       try {
-        const response = await fetch('/api/gps/set/location', {
-          method: 'PATCH',
+        const response = await fetch("/api/gps/set/location", {
+          method: "PATCH",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
-          credentials: 'include', // cookieを送信するために必要
+          credentials: "include", // cookieを送信するために必要
           body: JSON.stringify({ latitude, longitude }),
         });
 
         if (!response.ok) {
-          throw new Error('Failed to update location');
+          throw new Error("Failed to update location");
         }
       } catch (error) {
-        console.error('Error sending location:', error);
+        console.error("Error sending location:", error);
       }
     };
 
     // 位置情報を取得
     const updateLocation = () => {
       if (!navigator.geolocation) {
-        console.error('Geolocation is not supported');
+        console.error("Geolocation is not supported");
         return;
       }
 
       // 位置情報の取得オプション
       const options = {
-        enableHighAccuracy: true,  // 高精度の位置情報を取得
-        timeout: 5000,             // 5秒でタイムアウト
-        maximumAge: 0              // キャッシュした位置情報を使用しない
+        enableHighAccuracy: true, // 高精度の位置情報を取得
+        timeout: 5000, // 5秒でタイムアウト
+        maximumAge: 0, // キャッシュした位置情報を使用しない
       };
 
       navigator.geolocation.getCurrentPosition(
@@ -68,7 +71,7 @@ const LocationService = () => {
               console.error("An unknown error occurred.");
           }
         },
-        options
+        options,
       );
     };
 

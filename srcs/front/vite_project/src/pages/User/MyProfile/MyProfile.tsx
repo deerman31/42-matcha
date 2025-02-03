@@ -59,10 +59,10 @@ const MyProfile: React.FC = () => {
 
   const { my_info: profile } = profileData;
 
-  console.log("profile.is_gps:", profile.is_gps)
+  console.log("profile.is_gps:", profile.is_gps);
   setTrackingEnabled(profile.is_gps);
 
-  const is_gps_string = profile.is_gps ? "OK":"NG"
+  const is_gps_string = profile.is_gps ? "OK" : "NG";
 
   return (
     <div className="profile-container">

@@ -26,7 +26,8 @@ func UserRoutes(protected *echo.Group, db *sql.DB) {
 	setter.PATCH("/area", set.SetGeneric(db, configs.Area))
 	setter.PATCH("/gender", set.SetGeneric(db, configs.Gender))
 	setter.PATCH("/sexuality", set.SetGeneric(db, configs.Sexuality))
-	//setter.PATCH("/is-gps", set.SetGeneric(db, configs.IsGps))
+
+	// setter.PATCH("/is-gps", set.SetGeneric(db, configs.IsGps))
 
 	setter.PATCH("/birthdate", set.SetGeneric(db, configs.BirthDate)) //一応作ったが、生年月日は変更する必要がない気がする
 

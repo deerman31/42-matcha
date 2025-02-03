@@ -1,11 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { ErrorResponse,Response } from "../../../types/api.ts";
-import { getToken } from "../../../utils/auth.ts";
+import { ErrorResponse, Response } from "../../../../types/api.ts";
 
-import "./ChangeUsername.css";
+import AreaPicker from "../../../../components/AreaPicker.tsx";
+
+
+import { getToken } from "../../../../utils/auth.ts";
 
 interface FormData {
-  username: string;
+  area: string;
 }
 
 // 送信状態の型定義
@@ -14,10 +16,11 @@ interface SubmitStatus {
   message: string;
 }
 
-const ChangeUsername = () =>{
+const ChangeArea = () => {
+
   // フォームの初期状態
   const initialFormState: FormData = {
-    username: "",
+    area: "Hokkaido",
   };
   // 状態管理
   const [formData, setFormData] = useState<FormData>(initialFormState);
@@ -26,17 +29,6 @@ const ChangeUsername = () =>{
     type: "",
     message: "",
   });
-
-  // 入力変更ハンドラー
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ): void => {
-    const { name, value } = e.target;
-    setFormData((prev: FormData) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   // フォーム送信ハンドラー
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -47,13 +39,13 @@ const ChangeUsername = () =>{
     try {
       const token = getToken();
 
-      const response = await fetch("/api/users/set/username", {
+      const response = await fetch("/api/users/set/area", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({value: formData.area} ),
       });
 
       if (!response.ok) {
@@ -82,31 +74,35 @@ const ChangeUsername = () =>{
     }
   };
 
+
+
+  const handleAreaChange = (area: string): void => {
+    setFormData((prev: FormData) => ({
+      ...prev,
+      area: area,
+    }));
+  };
+
   return (
     <div className="form-container">
-      <h2 className="form-title">Register</h2>
-
+      <h2 className="form-title">Change Area</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username" className="form-label">
-            UserName
+        <div>
+          <label htmlFor="area">
+            Area
           </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className="form-input"
+          <AreaPicker
+            value={formData.area}
+            onChange={handleAreaChange} // 専用のハンドラーを使用
           />
         </div>
+
         <button
           type="submit"
           disabled={isSubmitting}
           className="submit-button"
         >
-          {isSubmitting ? "更新中..." : "更新"}
+          {isSubmitting ? "送信中..." : "送信"}
         </button>
       </form>
 
@@ -125,6 +121,4 @@ const ChangeUsername = () =>{
   );
 };
 
-
-
-export default ChangeUsername;
+export default ChangeArea;

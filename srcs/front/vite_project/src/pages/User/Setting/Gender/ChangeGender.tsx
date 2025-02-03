@@ -1,29 +1,25 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import "./LoginForm.css";
 
-import { ErrorResponse, LoginResponse } from "../../../types/api.ts";
+import { ErrorResponse, Response } from "../../../../types/api.ts";
 
-import { saveToken } from "../../../utils/auth.ts";
+import { getToken } from "../../../../utils/auth.ts";
 
-import { useNavigate } from "npm:react-router-dom";
+import GenderPicker from "../../../../components/GenderPicker.tsx";
 
 interface FormData {
-  username: string;
-  password: string;
+  gender: string;
 }
+
 // 送信状態の型定義
 interface SubmitStatus {
   type: "success" | "error" | "";
   message: string;
 }
 
-const LoginForm = () => {
-  const navigate = useNavigate();
-
+const ChangeGender = () => {
   // フォームの初期状態
   const initialFormState: FormData = {
-    username: "",
-    password: "",
+    gender: "male",
   };
   // 状態管理
   const [formData, setFormData] = useState<FormData>(initialFormState);
@@ -51,42 +47,33 @@ const LoginForm = () => {
     setSubmitStatus({ type: "", message: "" });
 
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
+      const token = getToken();
+
+      console.log("value:",formData.gender);
+
+      const response = await fetch("/api/users/set/gender", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({value: formData.gender}),
       });
 
       if (!response.ok) {
         const errorData: ErrorResponse = await response.json();
         throw new Error(errorData.error || "送信に失敗しました");
       }
-      const data: LoginResponse = await response.json();
+
+      const data: Response = await response.json();
 
       setSubmitStatus({
         type: "success",
-        message: "送信が完了しました！",
+        message: data.message || "登録が完了しました！",
       });
 
       // フォームをリセット
       setFormData(initialFormState);
-
-      // tokenをsave
-      saveToken(data.access_token);
-
-      const redirectURL = data.is_preparation
-        ? "/my-profile"
-        : "/setup-user-info";
-
-      // 成功メッセージを表示した後、短いディレイを設けてからリダイレクト
-      setTimeout(() => {
-        navigate(redirectURL, {
-          // 必要に応じて状態を渡すことができます
-          state: { from: "registration", message: "Login success" },
-        });
-      }, 1000); // 1.0秒後にリダイレクト
     } catch (error) {
       setSubmitStatus({
         type: "error",
@@ -100,52 +87,31 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-form-container">
-      <h2 className="login-form-title">Login</h2>
-
+    <div className="form-container">
+      <h2 className="form-title">Init</h2>
       <form onSubmit={handleSubmit}>
-        <div className="login-form-group">
-          <label htmlFor="username" className="login-form-label">
-            UserName
+
+
+        <div>
+          <label htmlFor="gender">
+            Gender
           </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className="login-form-input"
-          />
+          <GenderPicker value={formData.gender} onChange={handleChange} />
         </div>
 
-        <div className="login-form-group">
-          <label htmlFor="password" className="login-form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="login-form-input"
-          />
-        </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="login-submit-button"
+          className="submit-button"
         >
-          {isSubmitting ? "Login中..." : "Login"}
+          {isSubmitting ? "送信中..." : "送信"}
         </button>
       </form>
 
       {submitStatus.message && (
         <div
-          className={`login-alert ${
+          className={`alert ${
             submitStatus.type === "success" ? "alert-success" : "alert-error"
           }`}
           role="alert"
@@ -156,6 +122,6 @@ const LoginForm = () => {
       )}
     </div>
   );
-};
 
-export default LoginForm;
+};
+export default ChangeGender;

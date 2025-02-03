@@ -1,7 +1,7 @@
 // NavigationPage.tsx
-import React from 'react';
-import { Link } from 'npm:react-router-dom';
-import './Setting.css';
+import React from "react";
+import { Link } from "npm:react-router-dom";
+import "./Setting.css";
 
 const Setting: React.FC = () => {
   return (
@@ -9,6 +9,27 @@ const Setting: React.FC = () => {
       <div className="button-container">
         <Link to="/change-username" className="nav-button">
           UserName
+        </Link>
+        <Link to="/change-email" className="nav-button">
+          Email
+        </Link>
+        <Link to="/change-lastname" className="nav-button">
+          LastName
+        </Link>
+        <Link to="/change-firstname" className="nav-button">
+          FirstName
+        </Link>
+        <Link to="/change-birthdate" className="nav-button">
+          BirthDate
+        </Link>
+        <Link to="/change-gender" className="nav-button">
+          Gender
+        </Link>
+        <Link to="/change-sexuality" className="nav-button">
+          Sexuality
+        </Link>
+        <Link to="/change-area" className="nav-button">
+          Area
         </Link>
       </div>
     </div>
