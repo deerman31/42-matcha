@@ -18,6 +18,9 @@ const UserHeader: React.FC = () => {
           <li>
             <Link to="/setting">Setting</Link>
           </li>
+          <li>
+            <Link to="/brouse">Brouse</Link>
+          </li>
         </ul>
       </nav>
       <Logout />

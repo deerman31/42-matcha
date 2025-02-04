@@ -2,47 +2,35 @@
 import React from "react";
 import { Link } from "npm:react-router-dom";
 import "./Setting.css";
+import ChangeUsername from "./UserName/ChangeUsername.tsx";
+import ChangeEmail from "./Email/ChangeEmail.tsx";
+import ChangeLastname from "./LastName/ChangeLastname.tsx";
+import ChangeFirstname from "./FirstName/ChangeFirstname.tsx";
+import ChangeBirthDate from "./BirthDate/ChangeBirthDate.tsx";
+import ChangeGender from "./Gender/ChangeGender.tsx";
+import ChangeSexuality from "./Sexuality/ChangeSexuality.tsx";
+import ChangeArea from "./Area/ChangeArea.tsx";
+import ChangeIsGps from "./IsGps/IsGps.tsx";
+import InteractiveLocationMap from "./Map/InteractiveLocationMap.tsx";
+import ChangeSelfIntro from "./SelfIntra/ChangeSelfIntro.tsx";
+import TagSearchComponent from "./tag/TagSearchComponent.tsx";
 
 const Setting: React.FC = () => {
   return (
     <div className="navigation-container">
       <div className="button-container">
-        <Link to="/change-username" className="nav-button">
-          UserName
-        </Link>
-        <Link to="/change-email" className="nav-button">
-          Email
-        </Link>
-        <Link to="/change-lastname" className="nav-button">
-          LastName
-        </Link>
-        <Link to="/change-firstname" className="nav-button">
-          FirstName
-        </Link>
-        <Link to="/change-birthdate" className="nav-button">
-          BirthDate
-        </Link>
-        <Link to="/change-gender" className="nav-button">
-          Gender
-        </Link>
-        <Link to="/change-sexuality" className="nav-button">
-          Sexuality
-        </Link>
-        <Link to="/change-area" className="nav-button">
-          Area
-        </Link>
-        <Link to="/change-is-gps" className="nav-button">
-          IsGps
-        </Link>
-        <Link to="/change-map" className="nav-button">
-          Map
-        </Link>
-        <Link to="/change-self-intro" className="nav-button">
-          SelfIntro
-        </Link>
-        <Link to="/change-tag" className="nav-button">
-          Tag
-        </Link>
+        <ChangeUsername />
+        <ChangeEmail />
+        <ChangeLastname />
+        <ChangeFirstname />
+        <ChangeBirthDate />
+        <ChangeGender />
+        <ChangeSexuality />
+        <ChangeArea />
+        <ChangeIsGps />
+        <InteractiveLocationMap />
+        <ChangeSelfIntro />
+        <TagSearchComponent />
       </div>
     </div>
   );

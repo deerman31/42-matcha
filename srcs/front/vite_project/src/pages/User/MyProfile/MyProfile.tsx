@@ -17,37 +17,35 @@ const MyProfile: React.FC = () => {
 
   const token = getToken();
 
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch("/api/my-profile", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
 
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("/api/my-profile", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorData: ErrorResponse = await response.json();
-          throw new Error(
-            errorData.error || "プロフィールの取得に失敗しました",
-          );
-        }
-        const data: MyProfileResponse = await response.json();
-        setProfileData(data);
-
-        setTrackingEnabled(data.my_info.is_gps);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "予期せぬエラーが発生しました",
+      if (!response.ok) {
+        const errorData: ErrorResponse = await response.json();
+        throw new Error(
+          errorData.error || "プロフィールの取得に失敗しました",
         );
-      } finally {
-        setIsLoading(false);
       }
-    };
+      const data: MyProfileResponse = await response.json();
+      setProfileData(data);
+
+      setTrackingEnabled(data.my_info.is_gps);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "予期せぬエラーが発生しました",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-
     fetchProfile();
   }, []);
 
@@ -135,8 +133,9 @@ const MyProfile: React.FC = () => {
 
       <div className="profile-section">
         <ShowTags
-        tags={profile.tags}
-        refetchTags={fetchProfile} />
+          tags={profile.tags}
+          refetchTags={fetchProfile}
+        />
       </div>
 
       <div className="profile-section">

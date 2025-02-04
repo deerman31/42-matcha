@@ -2,15 +2,15 @@ import { getToken } from "../../../../utils/auth.ts";
 import "./ShowTags.css";
 
 import React from "react";
-import { X } from 'npm:lucide-react'; // バツアイコンのインポート
+import { X } from "npm:lucide-react"; // バツアイコンのインポート
 
 interface ShowTagsProps {
   tags: string[];
-  refetchTags: () => void;  // 追加
+  refetchTags: () => void; // 追加
 }
 
 const ShowTags: React.FC<ShowTagsProps> = (
-  { tags,refetchTags }: ShowTagsProps,
+  { tags, refetchTags }: ShowTagsProps,
 ) => {
   const deleteTag = async (tag: string) => {
     const token = getToken();

@@ -7,25 +7,25 @@
 }
 
 .tag {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    /* 既存のスタイル */
-  }
-  
-  .delete-button {
-    background: none;
-    border: none;
-    padding: 2px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    transition: color 0.2s;
-  }
-  
-  .delete-button:hover {
-    color: #ff4444;
-  }
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 既存のスタイル */
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.delete-button:hover {
+  color: #ff4444;
+}
