@@ -1,24 +1,55 @@
-.user-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    padding: 1rem;
-  }
-  
-  .no-users-message {
-    text-align: center;
-    padding: 3rem;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #666;
-    font-size: 1.1rem;
-  }
-  
-  @media (max-width: 768px) {
-    .user-cards-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      padding: 0.5rem;
-    }
-  }
+.user-card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.user-card {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.action-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.action-button:hover {
+  transform: scale(1.1);
+}
+
+.action-button.reject {
+  background-color: #ff4444;
+  color: white;
+}
+
+.action-button.accept {
+  background-color: #44cc44;
+  color: white;
+}
+
+.no-users-message {
+  text-align: center;
+  padding: 3rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+}

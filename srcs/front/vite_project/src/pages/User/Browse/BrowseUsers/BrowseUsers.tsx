@@ -1,5 +1,6 @@
 import { UserInfo } from "../../../../types/api.ts";
 import BrowseUser from "./User/User.tsx";
+import { useState,useEffect } from "react";
 import "./BrowseUsers.css";
 
 interface BrowseUsersProps {
@@ -7,7 +8,14 @@ interface BrowseUsersProps {
 }
 
 const BrowseUsers = ({ userInfos }: BrowseUsersProps) => {
-  if (!userInfos || userInfos.length === 0) {
+  // コンポーネントの初期マウント時にのみユーザー配列を初期化
+  const [remainingUsers, setRemainingUsers] = useState<UserInfo[]>([]);
+  
+  useEffect(() => {
+    setRemainingUsers(userInfos);
+  }, [userInfos]);
+
+  if (!remainingUsers || remainingUsers.length === 0) {
     return (
       <div className="no-users-message">
         表示できるユーザーが見つかりませんでした。
@@ -15,21 +23,42 @@ const BrowseUsers = ({ userInfos }: BrowseUsersProps) => {
     );
   }
 
+  const handleResponse = (accepted: boolean) => {
+    setRemainingUsers(prev => prev.slice(1));
+  };
+
+  // 常に配列の最初のユーザーを表示
+  const currentUser = remainingUsers[0];
+
   return (
-    <div className="user-cards-grid">
-      {userInfos.map((user) => (
+    <div className="user-card-container">
+      <div className="user-card">
         <BrowseUser
-          key={user.username}
-          username={user.username}
-          age={user.age}
-          distance_km={user.distance_km}
-          common_tag_count={user.common_tag_count}
-          fame_rating={user.fame_rating}
-          image_path={user.image_path}
+          username={currentUser.username}
+          age={currentUser.age}
+          distance_km={currentUser.distance_km}
+          common_tag_count={currentUser.common_tag_count}
+          fame_rating={currentUser.fame_rating}
+          image_path={currentUser.image_path}
         />
-      ))}
+      </div>
+      <div className="action-buttons">
+        <button 
+          className="action-button reject"
+          onClick={() => handleResponse(false)}
+        >
+          ✕
+        </button>
+        <button 
+          className="action-button accept"
+          onClick={() => handleResponse(true)}
+        >
+          ○
+        </button>
+      </div>
     </div>
   );
+
 };
 
 export default BrowseUsers;
