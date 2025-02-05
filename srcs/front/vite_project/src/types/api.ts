@@ -33,3 +33,15 @@ export interface MyInfo {
 export interface MyProfileResponse {
   my_info: MyInfo;
 }
+
+export interface UserInfo {
+  username: string;
+  age: number;
+  distance_km: number;
+  common_tag_count: number;
+  fame_rating: number;
+  image_path: string;
+}
+export interface BrowseResponse {
+  user_infos: UserInfo[];
+}

@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import "./RegisterForm.css";
 import { useNavigate } from "npm:react-router-dom";
 
-import { ErrorResponse, Response } from "../../../types/api.ts";
+import { ErrorResponse, Response } from "../../../../types/api.ts";
 
 interface FormData {
   username: string;

@@ -2,7 +2,7 @@ import React from "react";
 import "./UserHeader.css"; // Headerコンポーネントに対応するCSSファイルをインポート
 import { Link } from "npm:react-router-dom";
 
-import { Logout } from "../button/LogoutButton.tsx";
+import { Logout } from "../../button/LogoutButton.tsx";
 
 const UserHeader: React.FC = () => {
   return (

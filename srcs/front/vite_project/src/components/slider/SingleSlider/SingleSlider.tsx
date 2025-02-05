@@ -4,7 +4,7 @@ import "./SingleSlider.css";
 interface SliderProps {
   min?: number;
   max?: number;
-  defaultValue?: number;
+  value: number;
   step?: number;
   onChange?: (value: number) => void;
 }
@@ -12,11 +12,10 @@ interface SliderProps {
 const SingleSlider = ({
   min = 0,
   max = 100,
-  defaultValue = 50,
+  value,
   step = 1,
   onChange,
 }: SliderProps) => {
-  const [value, setValue] = useState<number>(defaultValue);
   const [dragging, setDragging] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -42,11 +41,8 @@ const SingleSlider = ({
 
     const newValue = getValueFromPosition(e.clientX);
     const clampedValue = Math.min(Math.max(newValue, min), max);
-    setValue(clampedValue);
-    // 直接onChangeを呼び出す
-     onChange?.(clampedValue);
-
-  }, [dragging, min, max, getValueFromPosition]);
+    onChange?.(clampedValue); // setValueの代わりにonChangeを直接呼び出し
+  }, [dragging, min, max, getValueFromPosition, onChange]);
 
   const handleMouseUp = useCallback(() => {
     setDragging(false);
@@ -63,21 +59,17 @@ const SingleSlider = ({
     }
   }, [dragging, handleMouseMove, handleMouseUp]);
 
-  useEffect(() => {
-    onChange?.(value);
-  }, [value, onChange]);
-
   return (
-    <div className="slider-container" ref={containerRef}>
-      <div className="slider-track">
+    <div className="single_slider-container" ref={containerRef}>
+      <div className="single_slider-track">
         <div
-          className="slider-range"
+          className="single_slider-range"
           style={{
             width: `${getPercentage(value)}%`,
           }}
         />
         <div
-          className="slider-thumb"
+          className="single_slider-thumb"
           style={{
             left: `${getPercentage(value)}%`,
           }}

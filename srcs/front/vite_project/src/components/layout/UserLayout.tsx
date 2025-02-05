@@ -1,4 +1,4 @@
-import UserHeader from "../headers/UserHeader.tsx";
+import UserHeader from "../headers/UserHeader/UserHeader.tsx";
 import { Outlet } from "npm:react-router-dom";
 import LocationService from "../LocationService/LocationService.tsx";
 import { LocationProvider } from "../LocationService/LocationContextType.tsx";

@@ -1,6 +1,5 @@
 // NavigationPage.tsx
 import React from "react";
-import { Link } from "npm:react-router-dom";
 import "./Setting.css";
 import ChangeUsername from "./UserName/ChangeUsername.tsx";
 import ChangeEmail from "./Email/ChangeEmail.tsx";

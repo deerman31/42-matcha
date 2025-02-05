@@ -4,19 +4,19 @@ import "./RangeSlider.css";
 interface RangeSliderProps {
   min?: number;
   max?: number;
-  defaultValue?: [number, number];
+  value: [number, number];
   step?: number;
   onChange?: (value: [number, number]) => void;
 }
 
-export default function RangeSlider({
+const RangeSlider = ({
   min = 0,
   max = 100,
-  defaultValue = [20, 37],
+  value,
   step = 1,
   onChange,
-}: RangeSliderProps) {
-  const [value, setValue] = useState<[number, number]>(defaultValue);
+}: RangeSliderProps) => {
+  // const [value, setValue] = useState<[number, number]>(start_value);
   const [dragging, setDragging] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -42,12 +42,10 @@ export default function RangeSlider({
     if (dragging === null) return;
 
     const newValue = getValueFromPosition(e.clientX);
-    setValue((prev: number[]) => {
-      const next = [...prev] as [number, number];
-      next[dragging] = Math.min(Math.max(newValue, min), max);
-      return next.sort((a, b) => a - b) as [number, number];
-    });
-  }, [dragging, min, max, getValueFromPosition]);
+    const nextValue = [...value] as [number, number];
+    nextValue[dragging] = Math.min(Math.max(newValue, min), max);
+    onChange?.(nextValue.sort((a, b) => a - b) as [number, number]); // 直接onChangeを呼び出し
+  }, [dragging, min, max, getValueFromPosition, onChange, value]);
 
   const handleMouseUp = useCallback(() => {
     setDragging(null);
@@ -64,15 +62,11 @@ export default function RangeSlider({
     }
   }, [dragging, handleMouseMove, handleMouseUp]);
 
-  useEffect(() => {
-    onChange?.(value);
-  }, [value, onChange]);
-
   return (
-    <div className="slider-container" ref={containerRef}>
-      <div className="slider-track">
+    <div className="range_slider-container" ref={containerRef}>
+      <div className="range_slider-track">
         <div
-          className="slider-range"
+          className="range_slider-range"
           style={{
             left: `${getPercentage(value[0])}%`,
             width: `${getPercentage(value[1]) - getPercentage(value[0])}%`,
@@ -81,7 +75,7 @@ export default function RangeSlider({
         {value.map((v: number, i: number) => (
           <div
             key={i}
-            className="slider-thumb"
+            className="range_slider-thumb"
             style={{
               left: `${getPercentage(v)}%`,
             }}
@@ -97,4 +91,6 @@ export default function RangeSlider({
       </div>
     </div>
   );
-}
+};
+
+export default RangeSlider;

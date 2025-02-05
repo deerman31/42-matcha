@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import "./LoginForm.css";
 
-import { ErrorResponse, LoginResponse } from "../../../types/api.ts";
+import { ErrorResponse, LoginResponse } from "../../../../types/api.ts";
 
-import { saveToken } from "../../../utils/auth.ts";
+import { saveToken } from "../../../../utils/auth.ts";
 
 import { useNavigate } from "npm:react-router-dom";
 
