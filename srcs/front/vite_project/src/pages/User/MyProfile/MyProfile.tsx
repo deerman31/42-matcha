@@ -6,6 +6,7 @@ import ShowLocationMap from "../../../components/LocationMap/ShowLocationMap.tsx
 import { useLocationContext } from "../../../components/LocationService/LocationContextType.tsx";
 
 import ShowTags from "./ShowTags/ShowTags.tsx";
+import AllMyImage from "../../../components/Image/AllMyImage/AllMyImage.tsx";
 
 const MyProfile: React.FC = () => {
   const [profileData, setProfileData] = useState<MyProfileResponse | null>(
@@ -70,6 +71,8 @@ const MyProfile: React.FC = () => {
   return (
     <div className="profile-container">
       <h1 className="profile-title">プロフィール</h1>
+
+      <AllMyImage />
 
       <div className="profile-section">
         <h2>基本情報</h2>

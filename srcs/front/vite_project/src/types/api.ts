@@ -49,3 +49,7 @@ export interface BrowseResponse {
 export interface BrowseUserImageResponse {
   image: string;
 }
+
+export interface AllMyImageResponse {
+  all_image: string[];
+}
