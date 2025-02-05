@@ -10,14 +10,11 @@ import (
 )
 
 func (o *OtherUsersHandler) OtherGetImage(c echo.Context) error {
-	fmt.Println("----------------")
-	fmt.Println("AAAAAAAAAAAAA")
-	fmt.Println("----------------")
 	req := new(OtherGetImageRequest)
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, OtherGetImageResponse{Error: "Invalid request body"})
 	}
-	fmt.Println(req)
+
 	// validationをここで行う
 	if err := c.Validate(req); err != nil {
 		return c.JSON(http.StatusBadRequest, OtherGetImageResponse{Error: err.Error()})

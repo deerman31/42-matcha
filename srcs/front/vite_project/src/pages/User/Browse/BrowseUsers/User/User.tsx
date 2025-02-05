@@ -4,7 +4,7 @@ import {
   ErrorResponse,
 } from "../../../../../types/api.ts";
 import { useEffect, useState } from "react";
-import "./User.css"
+import "./User.css";
 
 interface BrowseUserProps {
   username: string;
@@ -44,7 +44,7 @@ const BrowseUser: React.FC<BrowseUserProps> = (
       }
     };
     fetchImage();
-  },[image_path]);
+  }, [image_path]);
 
   return (
     <div className="user-card">

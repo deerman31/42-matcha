@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import BrowseConditions from "../../../components/BrowseConditions/BrowseConditions.tsx";
 import { UserInfo } from "../../../types/api.ts";
 import BrowseUsers from "./BrowseUsers/BrowseUsers.tsx";
-
 
 const Browse = () => {
   const [userInfos, setUserInfos] = useState<UserInfo[]>([]);

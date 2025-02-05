@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./LogoutButton.css";
-import { getToken, removeToken } from "../../utils/auth.ts";
-import { ErrorResponse, Response } from "../../types/api.ts";
+import { getToken, removeToken } from "../../../utils/auth.ts";
+import { ErrorResponse, Response } from "../../../types/api.ts";
 
 import { useNavigate } from "npm:react-router-dom";
 

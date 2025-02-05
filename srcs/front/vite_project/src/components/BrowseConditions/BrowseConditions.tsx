@@ -122,7 +122,6 @@ const BrowseConditions = ({ onBrowseComplete }: BrowseConditionsProps) => {
     }));
   };
 
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsSubmitting(true);

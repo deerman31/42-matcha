@@ -1,0 +1,40 @@
+.like-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #ffffff;
+  border: 2px solid #ff4b7d;
+  border-radius: 20px;
+  color: #ff4b7d;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.like-button:hover {
+  background-color: #ff4b7d;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.like-button:active {
+  transform: translateY(0);
+}
+
+.like-icon {
+  font-size: 18px;
+}
+
+.like-text {
+  font-weight: 500;
+}
+
+/* ボタンが無効化されている場合のスタイル */
+.like-button:disabled {
+  background-color: #e0e0e0;
+  border-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+}

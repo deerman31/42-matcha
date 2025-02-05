@@ -1,16 +1,16 @@
 import { UserInfo } from "../../../../types/api.ts";
 import BrowseUser from "./User/User.tsx";
-import { useState,useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./BrowseUsers.css";
+import LikeButton from "../../../../components/button/LikeButton/LikeButton.tsx";
 
 interface BrowseUsersProps {
   userInfos: UserInfo[];
 }
 
 const BrowseUsers = ({ userInfos }: BrowseUsersProps) => {
-  // コンポーネントの初期マウント時にのみユーザー配列を初期化
   const [remainingUsers, setRemainingUsers] = useState<UserInfo[]>([]);
-  
+
   useEffect(() => {
     setRemainingUsers(userInfos);
   }, [userInfos]);
@@ -23,11 +23,10 @@ const BrowseUsers = ({ userInfos }: BrowseUsersProps) => {
     );
   }
 
-  const handleResponse = (accepted: boolean) => {
-    setRemainingUsers(prev => prev.slice(1));
+  const handleResponse = () => {
+    setRemainingUsers((prev) => prev.slice(1));
   };
 
-  // 常に配列の最初のユーザーを表示
   const currentUser = remainingUsers[0];
 
   return (
@@ -43,22 +42,19 @@ const BrowseUsers = ({ userInfos }: BrowseUsersProps) => {
         />
       </div>
       <div className="action-buttons">
-        <button 
+        <button
           className="action-button reject"
-          onClick={() => handleResponse(false)}
+          onClick={() => handleResponse()}
         >
           ✕
         </button>
-        <button 
-          className="action-button accept"
-          onClick={() => handleResponse(true)}
-        >
-          ○
-        </button>
+        <LikeButton
+          username={currentUser.username}
+          onClick={() => handleResponse()}
+        />
       </div>
     </div>
   );
-
 };
 
 export default BrowseUsers;
