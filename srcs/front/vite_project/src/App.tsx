@@ -14,7 +14,7 @@ import UserLayout from "./components/layout/UserLayout.tsx";
 
 import MyProfile from "./pages/User/MyProfile/MyProfile.tsx";
 import Setting from "./pages/User/Setting/Setting.tsx";
-import Brouse from "./pages/User/Brouse/Brouse.tsx";
+import Browse from "./pages/User/Browse/Browse.tsx";
 
 const App: React.FC = () => {
   return (
@@ -30,7 +30,7 @@ const App: React.FC = () => {
         <Route element={<UserLayout />}>
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/setting" element={<Setting />} />
-          <Route path="/brouse" element={<Brouse />} />
+          <Route path="/browse" element={<Browse />} />
         </Route>
       </Routes>
 

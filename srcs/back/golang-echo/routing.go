@@ -8,6 +8,7 @@ import (
 	"golang-echo/gps"
 	"golang-echo/middle"
 	myprofile "golang-echo/my_profile"
+	otherusers "golang-echo/other_users"
 	"golang-echo/profile"
 	"golang-echo/research"
 	"golang-echo/tags"
@@ -38,4 +39,6 @@ func routing(e *echo.Echo, db *sql.DB) {
 	friend.FriendRoutes(protected, db)
 
 	myprofile.MyProfileRoutes(protected, db)
+
+	otherusers.OtherUsersRoutes(protected, db)
 }

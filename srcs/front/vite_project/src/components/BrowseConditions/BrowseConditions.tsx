@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import RangeSlider from "../slider/RangeSlider/RangeSlider.tsx";
 import SingleSlider from "../slider/SingleSlider/SingleSlider.tsx";
 
@@ -13,6 +7,7 @@ import SortOrderPicker from "./SortOrderPicker/SortOrderPicker.tsx";
 import { getToken } from "../../utils/auth.ts";
 
 import { BrowseResponse, ErrorResponse } from "../../types/api.ts";
+import { UserInfo } from "../../types/api.ts";
 
 //age distance fame_rating tag
 
@@ -48,7 +43,11 @@ interface SubmitStatus {
   message: string;
 }
 
-const BrowseConditions = () => {
+interface BrowseConditionsProps {
+  onBrowseComplete: (userInfos: UserInfo[]) => void;
+}
+
+const BrowseConditions = ({ onBrowseComplete }: BrowseConditionsProps) => {
   // フォームの初期状態
   const initialFormState: FormData = {
     age_range: {
@@ -123,6 +122,7 @@ const BrowseConditions = () => {
     }));
   };
 
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -146,7 +146,8 @@ const BrowseConditions = () => {
       }
       const data: BrowseResponse = await response.json();
 
-      console.log(data.user_infos);
+      // レスポンスデータを親コンポーネントに渡す
+      onBrowseComplete(data.user_infos);
 
       setSubmitStatus({
         type: "success",
@@ -164,13 +165,9 @@ const BrowseConditions = () => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log('Form data updated:', formData);
-  // }, [formData]);
-
   return (
     <div className="browse-form-container">
-      <h2 className="browse-form-title">YKUSANO</h2>
+      <h2 className="browse-form-title">Browse</h2>
 
       <form onSubmit={handleSubmit}>
         <div>

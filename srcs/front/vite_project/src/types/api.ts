@@ -45,3 +45,7 @@ export interface UserInfo {
 export interface BrowseResponse {
   user_infos: UserInfo[];
 }
+
+export interface BrowseUserImageResponse {
+  image: string;
+}

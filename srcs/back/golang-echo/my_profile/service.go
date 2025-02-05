@@ -6,6 +6,6 @@ type MyProfileService struct {
 	db *sql.DB
 }
 
-func  NewMyProfileService(db *sql.DB) *MyProfileService {
+func NewMyProfileService(db *sql.DB) *MyProfileService {
 	return &MyProfileService{db: db}
 }
