@@ -1,4 +1,4 @@
-import { useState } from "@types/react";
+import { useState } from "react";
 import RangeSlider from "../slider/RangeSlider.tsx";
 import SingleSlider from "../slider/SingleSlider.tsx";
 

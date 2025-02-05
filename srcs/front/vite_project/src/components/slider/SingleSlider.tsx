@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import "./Slider.css";
+import "./SingleSlider.css";
 
 interface SliderProps {
   min?: number;
@@ -41,7 +41,11 @@ const SingleSlider = ({
     if (!dragging) return;
 
     const newValue = getValueFromPosition(e.clientX);
-    setValue(Math.min(Math.max(newValue, min), max));
+    const clampedValue = Math.min(Math.max(newValue, min), max);
+    setValue(clampedValue);
+    // 直接onChangeを呼び出す
+     onChange?.(clampedValue);
+
   }, [dragging, min, max, getValueFromPosition]);
 
   const handleMouseUp = useCallback(() => {
