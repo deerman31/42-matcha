@@ -43,6 +43,7 @@ func UserRoutes(protected *echo.Group, db *sql.DB) {
 	getter.GET("/image3", get.GetImage(db, set.ImageThree))
 	getter.GET("/image4", get.GetImage(db, set.ImageFour))
 	getter.GET("/image5", get.GetImage(db, set.ImageFive))
+	getter.GET("/all-image", get.GetImage(db, set.ImageFive))
 
 
 	// ルート設定をまとめて定義
