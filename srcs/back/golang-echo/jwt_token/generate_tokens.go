@@ -14,7 +14,6 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-// func GenerateAccessToken(userID int, secretKey string) (string, error) {
 func GenerateAccessToken(userID int) (string, error) {
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 
@@ -37,7 +36,6 @@ func signNewToken(userID int, expiresAt time.Time, secretKey string) (string, er
 		},
 	}
 
-	//token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {

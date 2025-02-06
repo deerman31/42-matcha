@@ -2,6 +2,7 @@ package myprofile
 
 import (
 	"golang-echo/jwt_token"
+	"golang-echo/utils/query"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -36,12 +37,12 @@ func (m *MyProfileService) GetMyProfile(myID int) (myInfo, error) {
 	if err != nil {
 		return myInfo{}, err
 	}
-	tags, err := getMyTags(tx, myID)
+	tags, err := query.GetUserTags(tx, myID)
 	if err != nil {
 		return myInfo{}, err
 	}
 
-	loc, err := getUserLocation(tx, myID)
+	loc, err := query.GetUserLocation(tx, myID)
 	if err != nil {
 		return myInfo{}, err
 	}
@@ -53,15 +54,15 @@ func (m *MyProfileService) GetMyProfile(myID int) (myInfo, error) {
 	if err != nil {
 		return myInfo{}, err
 	}
-	friendsCount, err := getFriendCount(tx, myID)
+	friendsCount, err := query.GetFriendCount(tx, myID)
 	if err != nil {
 		return myInfo{}, err
 	}
-	blocksCount, err := getBlockedCount(tx, myID)
+	blocksCount, err := query.GetBlockedCount(tx, myID)
 	if err != nil {
 		return myInfo{}, err
 	}
-	reportsCount, err := getFakeAccountReports(tx, myID)
+	reportsCount, err := query.GetFakeAccountReports(tx, myID)
 	if err != nil {
 		return myInfo{}, err
 	}
