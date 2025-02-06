@@ -1,5 +1,4 @@
 services:
-
   back:
     image: 42-matcha/back:${VERSION:-latest}
     build:
@@ -40,13 +39,28 @@ services:
     restart: always
     env_file: .env
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
       start_period: 10s
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  nginx:
+    image: 42-matcha/nginx:${VERSION:-latest}
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "${NGINX_PORT}:443"
+    env_file: .env
+    depends_on:
+      - front
+      - back
     networks:
       - app-network
 
@@ -67,7 +81,6 @@ services:
 
 volumes:
   postgres_data:
-
 
 networks:
   app-network:

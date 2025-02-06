@@ -180,7 +180,7 @@ CREATE INDEX idx_user_tag ON user_tags(user_id, tag_id);
 CREATE TABLE IF NOT EXISTS user_location (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    location GEOGRAPHY(POINT, 4326), -- WGS84形式の位置情報
+    location GEOGRAPHY(POINT, 4326) DEFAULT ST_SetSRID(ST_MakePoint(139.7454, 35.6586), 4326)::geography, -- WGS84形式の位置情報
     --location_alternative GEOGRAPHY(POINT, 4326), --is_gpsがfalseの場合に使う位置情報、ユーザーが自分で設定する
     location_alternative GEOGRAPHY(POINT, 4326) DEFAULT ST_SetSRID(ST_MakePoint(139.7454, 35.6586), 4326)::geography, -- Defaultは東京タワー
     --Alternative
@@ -383,6 +383,7 @@ BEGIN
     END;
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- テストユーザー生成の関数定義
 CREATE OR REPLACE FUNCTION generate_test_users() RETURNS void AS $$

@@ -13,7 +13,7 @@ func UserRoutes(protected *echo.Group, db *sql.DB) {
 	user := protected.Group("/users")
 
 	setter := user.Group("/set")
-	setter.POST("/user_info", set.InitSetUserInfo(db))
+	setter.POST("/user-info", set.InitSetUserInfo(db))
 
 	setter.PATCH("/username", set.SetUserName(db))
 	setter.PATCH("/email", set.SetEmail(db))
@@ -26,8 +26,6 @@ func UserRoutes(protected *echo.Group, db *sql.DB) {
 	setter.PATCH("/area", set.SetGeneric(db, configs.Area))
 	setter.PATCH("/gender", set.SetGeneric(db, configs.Gender))
 	setter.PATCH("/sexuality", set.SetGeneric(db, configs.Sexuality))
-	//setter.PATCH("/is-gps", set.SetGeneric(db, configs.IsGps))
-
 	setter.PATCH("/birthdate", set.SetGeneric(db, configs.BirthDate)) //一応作ったが、生年月日は変更する必要がない気がする
 
 	setter.POST("/image1", set.SetImage(db, set.ImageOne))
@@ -42,7 +40,7 @@ func UserRoutes(protected *echo.Group, db *sql.DB) {
 	getter.GET("/image3", get.GetImage(db, set.ImageThree))
 	getter.GET("/image4", get.GetImage(db, set.ImageFour))
 	getter.GET("/image5", get.GetImage(db, set.ImageFive))
-
+	getter.GET("/all-image", get.GetAllImage(db))
 
 	// ルート設定をまとめて定義
 	routes := []routeConfig{

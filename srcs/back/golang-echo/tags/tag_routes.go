@@ -9,8 +9,12 @@ import (
 func TagRoutes(protected *echo.Group, db *sql.DB) {
 	route := protected.Group("/tag")
 
-	route.GET("/get-user", GetUserTag(db))
+	handler := NewTagHandler(NewTagService(db))
 
-	route.POST("/set", SetTag(db))
-	route.POST("/delete", DeleteTag(db))
+	route.GET("/get-user", handler.GetUserTag)
+
+	route.POST("/set", handler.SetTag)
+	route.DELETE("/delete", handler.DeleteTag)
+
+	route.POST("/search", handler.SearchTag)
 }

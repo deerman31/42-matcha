@@ -11,5 +11,5 @@ func BrowseRoutes(protected *echo.Group, db *sql.DB) {
 
 	handler := NewBrowseHandler(NewBrowseService(db))
 
-	browse.GET("/", handler.GetBrowseUser)
+	browse.POST("", handler.GetBrowseUser)
 }

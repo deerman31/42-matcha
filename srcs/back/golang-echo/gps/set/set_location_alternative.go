@@ -15,7 +15,7 @@ const (
 	setLocationAlternativeQuery = `
 	UPDATE user_location
 		SET
-			location_alternative = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
+			location_alternative = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
 		WHERE user_id = $3`
 )
 

@@ -3,13 +3,13 @@ package browse
 import "time"
 
 type userInfo struct {
-	UserName       string // username
-	Age            int    // 年齢
-	DistanceKm     int    // 自分と相手との距離
-	CommonTagCount int    // 共通タグの数
-	FameRating     int    // fame_raging
+	UserName       string `json:"username"` // username
+	Age            int `json:"age"`   // 年齢
+	DistanceKm     int `json:"distance_km"`   // 自分と相手との距離
+	CommonTagCount int `json:"common_tag_count"`   // 共通タグの数
+	FameRating     int `json:"Fame_rating"`   // fame_raging
 	//ImageURI       string
-	ImagePath string
+	ImagePath string `json:"image_path"`
 }
 
 type BrowseResponse struct {

@@ -11,5 +11,5 @@ func ResearchRoutes(protected *echo.Group, db *sql.DB) {
 
 	handler := NewResearchHandler(NewResearchService(db))
 
-	browse.GET("/", handler.GetResearchUsers)
+	browse.GET("", handler.GetResearchUsers)
 }
