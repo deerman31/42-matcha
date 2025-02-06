@@ -5,6 +5,7 @@ import {
 } from "../../../../../types/api.ts";
 import { useEffect, useState } from "react";
 import "./User.css";
+import { Link } from "npm:react-router-dom";
 
 interface BrowseUserProps {
   username: string;
@@ -21,11 +22,12 @@ const BrowseUser: React.FC<BrowseUserProps> = (
 ) => {
   const [image, setImage] = useState<string | null>(null);
 
+
   useEffect(() => {
     const fetchImage = async () => {
       try {
         const token = getToken();
-        const response = await fetch("/api/other-users/get-image", {
+        const response = await fetch("/api/other-users/get/image", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -54,6 +56,8 @@ const BrowseUser: React.FC<BrowseUserProps> = (
       <p>Distance: {distance_km} km</p>
       <p>Common Tags: {common_tag_count}</p>
       <p>Fame Rating: {fame_rating}</p>
+
+      <Link to={`/other-user/${encodeURIComponent(username)}`}>詳細</Link>
     </div>
   );
 };

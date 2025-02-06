@@ -22,10 +22,10 @@ func GetIsGPS(db *sql.DB) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not start transaction"})
 		}
 		defer tx.Rollback() // エラーが発生した場合はロールバック
-		const query = `SELECT is_gps FROM user_location WHERE user_id = $1;`
+		const queryGetIsGPSByUserID = `SELECT is_gps FROM user_location WHERE user_id = $1;`
 		// クエリを実行
 		var isGPS bool
-		if err = tx.QueryRow(query, userID).Scan(&isGPS); err != nil {
+		if err = tx.QueryRow(queryGetIsGPSByUserID, userID).Scan(&isGPS); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": fmt.Sprintf("failed to query user tags: %v", err)})
 		}
 

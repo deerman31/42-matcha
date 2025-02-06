@@ -15,6 +15,7 @@ import UserLayout from "./components/layout/UserLayout.tsx";
 import MyProfile from "./pages/User/MyProfile/MyProfile.tsx";
 import Setting from "./pages/User/Setting/Setting.tsx";
 import Browse from "./pages/User/Browse/Browse.tsx";
+import OtherProfile from "./pages/User/OtherProfile/OtherProfile.tsx";
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,8 @@ const App: React.FC = () => {
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/browse" element={<Browse />} />
+
+          <Route path="/other-user/:username" element={<OtherProfile />} />
         </Route>
       </Routes>
 

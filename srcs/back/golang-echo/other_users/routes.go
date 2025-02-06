@@ -11,5 +11,7 @@ func OtherUsersRoutes(protected *echo.Group, db *sql.DB) {
 
 	handler := NewOtherUsersHandler(NewOtherUsersService(db))
 
-	other.POST("/get-image", handler.OtherGetImage)
+	get:= other.Group("/get")
+	get.POST("/image", handler.OtherGetImage)
+	get.GET("/profile/:name", handler.OtherGetProfile)
 }

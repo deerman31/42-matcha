@@ -53,3 +53,20 @@ export interface BrowseUserImageResponse {
 export interface AllMyImageResponse {
   all_image: string[];
 }
+
+export interface OtherProfile {
+	username: string;
+	age: number;
+	gender: string;
+	sexuality: string;
+	area: string;
+	self_intro: string;
+	tags: string[];
+	distance: number;
+	fame_rating: number;
+  }
+  
+  export interface OtherProfileResponse {
+	other_profile: OtherProfile;
+	error?: string;
+  }

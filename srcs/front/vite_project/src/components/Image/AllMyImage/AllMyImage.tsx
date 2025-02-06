@@ -23,9 +23,7 @@ const AllMyImage = () => {
           throw new Error(errorData.error);
         }
 
-
         const data: AllMyImageResponse = await response.json();
-
 
         setAllImage(data.all_image);
       } catch (error) {

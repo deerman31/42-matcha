@@ -12,4 +12,6 @@ var (
 	ErrTransactionFailed = errors.New("transaction failed")
 
 	ErrReadImageFile = errors.New("Image loading failed")
+
+    ErrFailedToGetOtherUserProfile = errors.New("failed to get other user profile")
 )
