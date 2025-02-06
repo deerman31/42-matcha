@@ -55,18 +55,22 @@ export interface AllMyImageResponse {
 }
 
 export interface OtherProfile {
-	username: string;
-	age: number;
-	gender: string;
-	sexuality: string;
-	area: string;
-	self_intro: string;
-	tags: string[];
-	distance: number;
-	fame_rating: number;
-  }
-  
-  export interface OtherProfileResponse {
-	other_profile: OtherProfile;
-	error?: string;
-  }
+  username: string;
+  age: number;
+  gender: string;
+  sexuality: string;
+  area: string;
+  self_intro: string;
+  tags: string[];
+  distance: number;
+  fame_rating: number;
+}
+
+export interface OtherProfileResponse {
+  other_profile: OtherProfile;
+  error?: string;
+}
+
+export interface AllOtherImageResponse {
+  all_image: string[];
+}

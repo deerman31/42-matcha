@@ -1,11 +1,11 @@
+import { useEffect, useState } from "react";
 import { getToken } from "../../../../../utils/auth.ts";
 import {
   BrowseUserImageResponse,
   ErrorResponse,
 } from "../../../../../types/api.ts";
-import { useEffect, useState } from "react";
 import "./User.css";
-import { Link } from "npm:react-router-dom";
+import ProfileModal from "../../../ProfileModal/ProfileModal.tsx";
 
 interface BrowseUserProps {
   username: string;
@@ -16,12 +16,16 @@ interface BrowseUserProps {
   image_path: string;
 }
 
-const BrowseUser: React.FC<BrowseUserProps> = (
-  { username, age, distance_km, common_tag_count, fame_rating, image_path }:
-    BrowseUserProps,
-) => {
+const BrowseUser: React.FC<BrowseUserProps> = ({
+  username,
+  age,
+  distance_km,
+  common_tag_count,
+  fame_rating,
+  image_path,
+}: BrowseUserProps) => {
   const [image, setImage] = useState<string | null>(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -30,7 +34,7 @@ const BrowseUser: React.FC<BrowseUserProps> = (
         const response = await fetch("/api/other-users/get/image", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ image_path: image_path }),
@@ -49,16 +53,29 @@ const BrowseUser: React.FC<BrowseUserProps> = (
   }, [image_path]);
 
   return (
-    <div className="user-card">
-      <img src={image} alt={`${username}'s profile`} />
-      <h2>{username}</h2>
-      <p>Age: {age}</p>
-      <p>Distance: {distance_km} km</p>
-      <p>Common Tags: {common_tag_count}</p>
-      <p>Fame Rating: {fame_rating}</p>
+    <>
+      <div className="user-card">
+        <img src={image} alt={`${username}'s profile`} />
+        <h2>{username}</h2>
+        <p>Age: {age}</p>
+        <p>Distance: {distance_km} km</p>
+        <p>Common Tags: {common_tag_count}</p>
+        <p>Fame Rating: {fame_rating}</p>
 
-      <Link to={`/other-user/${encodeURIComponent(username)}`}>詳細</Link>
-    </div>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="details-button"
+        >
+          詳細
+        </button>
+      </div>
+
+      <ProfileModal
+        username={username}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
   );
 };
 

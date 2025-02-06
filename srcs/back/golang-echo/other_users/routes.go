@@ -14,4 +14,6 @@ func OtherUsersRoutes(protected *echo.Group, db *sql.DB) {
 	get:= other.Group("/get")
 	get.POST("/image", handler.OtherGetImage)
 	get.GET("/profile/:name", handler.OtherGetProfile)
+	get.GET("/all-image/:name", handler.GetOtherAllImage)
 }
+// `/api/other-users/get/all-image/${username}`, {

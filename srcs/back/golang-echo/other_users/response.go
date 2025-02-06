@@ -32,3 +32,8 @@ type OtherGetProfileResponse struct {
 	OtherProfile OtherProfile `json:"other_profile,omitempty"`
 	Error        string       `json:"error,omitempty"`
 }
+
+type GetOtherAllImageResponse struct {
+	AllImage []string `json:"all_image,omitempty"`
+	Error    string   `json:"error,omitempty"`
+}
