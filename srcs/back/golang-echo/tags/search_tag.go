@@ -13,14 +13,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-type SearchTagRequest struct {
-	TagName string `json:"tagname" validate:"required"`
-}
-type SearchTagResponse struct {
-	Tags  []string `json:"tags,omitempty"`
-	Error string   `json:"error,omitempty"`
-}
-
 func (t *TagHandler) SearchTag(c echo.Context) error {
 	// claims, ok := c.Get("user").(*jwt_token.Claims)
 	_, ok := c.Get("user").(*jwt_token.Claims)

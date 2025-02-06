@@ -9,35 +9,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterRequest struct {
-	Username   string `json:"username" validate:"required,username"`
-	Email      string `json:"email" validate:"required,email"`
-	Password   string `json:"password" validate:"required,password"`
-	RePassword string `json:"repassword" validate:"required,password"`
-}
 
-const (
-	// 1つのクエリで両方をチェック
-	checkDuplicateCredentialsQuery = `
-        SELECT 
-            EXISTS(SELECT 1 FROM users WHERE username = $1) as username_exists,
-            EXISTS(SELECT 1 FROM users WHERE email = $2) as email_exists
-    `
-	// 新規ユーザーを登録するためのクエリ
-	insertNewUserQuery = `
-        INSERT INTO users (
-            username, 
-            email, 
-            password_hash
-        ) VALUES ($1, $2, $3)
-		 RETURNING id
-    `
-)
-
-type RegisterResponse struct {
-	Message string `json:"message,omitempty"`
-	Error   string `json:"error,omitempty"`
-}
 
 func (a *AuthHandler) register(c echo.Context) error {
 	req := new(RegisterRequest)

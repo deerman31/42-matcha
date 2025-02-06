@@ -11,45 +11,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginRequest struct {
-	Username string `json:"username" validate:"required,username"`
-	Password string `json:"password" validate:"required,password"`
-}
-
-// User はデータベースのユーザー情報を表す構造体
-type User struct {
-	ID            int
-	Username      string
-	PasswordHash  string
-	isOnline      bool
-	isRegistered  bool
-	isPreparation bool
-}
-
-// トークンのレスポンス用構造体を追加
-type LoginResponse struct {
-	IsPreparation bool   `json:"is_preparation,omitempty"` // 初回ログインが済んでいるかどうか
-	AccessToken   string `json:"access_token,omitempty"`
-	Error         string `json:"error,omitempty"`
-}
-
-const (
-	// ユーザー名からユーザー情報を取得するクエリ
-	selectUserByUsernameQuery = `
-        SELECT id, username, password_hash, is_online, is_registered, is_preparation
-        FROM users 
-        WHERE username = $1
-        LIMIT 1
-    `
-
-	// ユーザーのオンラインステータスを更新するクエリ
-	updateUserOnlineStatusQuery = `
-        UPDATE users 
-        SET is_online = TRUE 
-        WHERE id = $1
-	`
-)
-
 func (a *AuthHandler) Login(c echo.Context) error {
 	req := new(LoginRequest)
 	if err := c.Bind(req); err != nil {
@@ -59,7 +20,7 @@ func (a *AuthHandler) Login(c echo.Context) error {
 	if err := c.Validate(req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
-	user, accessToken, err := a.service.Login(req)
+	user, accessToken, err := a.service.Authenticate(req)
 	if err != nil {
 		switch err {
 		case ErrUserNotFound:
@@ -76,7 +37,7 @@ func (a *AuthHandler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, LoginResponse{IsPreparation: user.isPreparation, AccessToken: accessToken})
 }
 
-func (a *AuthService) Login(req *LoginRequest) (*User, string, error) {
+func (a *AuthService) Authenticate(req *LoginRequest) (*User, string, error) {
 	// トランザクションを開始
 	tx, err := a.db.Begin()
 	if err != nil {

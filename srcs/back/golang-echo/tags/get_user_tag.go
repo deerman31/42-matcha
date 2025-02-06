@@ -8,10 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type GetUserTagResponse struct {
-	Tags  []string `json:"tags,omitempty"`
-	Error string   `json:"error,omitempty"`
-}
 
 func (t *TagHandler) GetUserTag(c echo.Context) error {
 	claims, ok := c.Get("user").(*jwt_token.Claims)

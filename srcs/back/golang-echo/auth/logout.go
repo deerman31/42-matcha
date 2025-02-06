@@ -10,21 +10,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-const (
-
-	// ユーザーのオンラインステータスを更新するクエリ
-	updateUserOfflineStatusQuery = `
-        UPDATE users 
-        SET is_online = FALSE 
-        WHERE id = $1
-    `
-)
-
-type LogoutResponse struct {
-	Message string `json:"message,omitempty"`
-	Error   string `json:"error,omitempty"`
-}
-
 func (a *AuthHandler) Logout(c echo.Context) error {
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	// Authorizationヘッダーを取得

@@ -14,14 +14,7 @@ const (
 	deleteTagSuccessMessage = "Tag deleted successfully"
 )
 
-type DeleteTagRequest struct {
-	Tag string `json:"tag" validate:"required,tag"`
-}
 
-type DeleteTagResponse struct {
-	Message string `json:"message,omitempty"`
-	Error   string `json:"error,omitempty"`
-}
 
 func (t *TagHandler) DeleteTag(c echo.Context) error {
 	claims, ok := c.Get("user").(*jwt_token.Claims)
