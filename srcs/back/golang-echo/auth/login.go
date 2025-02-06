@@ -44,6 +44,7 @@ func (a *AuthService) Authenticate(req *LoginRequest) (*User, string, error) {
 		return nil, "", ErrTransactionFailed
 	}
 	defer tx.Rollback() // エラーが発生した場合はロールバック
+
 	user, status, err := searchUserDB(tx, req.Username)
 	if err != nil {
 		if status == http.StatusNotFound {
@@ -65,19 +66,11 @@ func (a *AuthService) Authenticate(req *LoginRequest) (*User, string, error) {
 	if err != nil {
 		return nil, "", ErrTransactionFailed
 	}
-	result, err := tx.Exec(updateUserOnlineStatusQuery, user.ID)
-	if err != nil {
-		return nil, "", ErrTransactionFailed
+
+	if err := updateUserStatusOn(tx, user.ID); err != nil {
+		return nil, "", err
 	}
-	// 更新が成功したか確認
-	rows, err := result.RowsAffected()
-	if err != nil {
-		return nil, "", ErrTransactionFailed
-	}
-	// userが見つからなかった場合
-	if rows == 0 {
-		return nil, "", ErrUserNotFound
-	}
+
 	// トランザクションのコミット
 	if err = tx.Commit(); err != nil {
 		return nil, "", ErrTransactionFailed
@@ -85,60 +78,37 @@ func (a *AuthService) Authenticate(req *LoginRequest) (*User, string, error) {
 	return user, accessToken, nil
 }
 
-// func Login(db *sql.DB) echo.HandlerFunc {
-// 	return func(c echo.Context) error {
-// 		req := new(LoginRequest)
-// 		if err := c.Bind(req); err != nil {
-// 			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
-// 		}
-// 		// validationをここで行う
-// 		if err := c.Validate(req); err != nil {
-// 			return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
-// 		}
-// 		// トランザクションを開始
-// 		tx, err := db.Begin()
-// 		if err != nil {
-// 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not start transaction"})
-// 		}
-// 		defer tx.Rollback() // エラーが発生した場合はロールバック
-// 		user, status, err := searchUserDB(tx, req.Username)
-// 		if err != nil {
-// 			return c.JSON(status, map[string]string{"error": err.Error()})
-// 		}
-// 		// userがメールで認証済みかどうか確認
-// 		if !user.isRegistered {
-// 			return c.JSON(http.StatusForbidden, map[string]string{"error": "Email not verified"})
-// 		}
-// 		if bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)) != nil {
-// 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid password"})
-// 		}
-
-// 		accessToken, err := jwt_token.GenerateAccessToken(user.ID)
-// 		if err != nil {
-// 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-// 		}
-// 		result, err := tx.Exec(updateUserOnlineStatusQuery, user.ID)
-// 		if err != nil {
-// 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-// 		}
-// 		// 更新が成功したか確認
-// 		rows, err := result.RowsAffected()
-// 		if err != nil {
-// 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
-// 		}
-// 		// userが見つからなかった場合
-// 		if rows == 0 {
-// 			return c.JSON(http.StatusNotFound, map[string]string{"error": "User not found"})
-// 		}
-// 		// トランザクションのコミット
-// 		if err = tx.Commit(); err != nil {
-// 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not commit transaction"})
-// 		}
-// 		return c.JSON(http.StatusOK, TokenResponse{IsPreparation: user.isPreparation, AccessToken: accessToken})
-// 	}
-// }
+func updateUserStatusOn(tx *sql.Tx, userID int) error {
+	const updateUserOnlineStatusQuery = `
+        UPDATE users 
+        SET is_online = TRUE 
+        WHERE id = $1
+	`
+	result, err := tx.Exec(updateUserOnlineStatusQuery, userID)
+	if err != nil {
+		return ErrTransactionFailed
+	}
+	// 更新が成功したか確認
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return ErrTransactionFailed
+	}
+	// userが見つからなかった場合
+	if rows == 0 {
+		return ErrUserNotFound
+	}
+	return nil
+}
 
 func searchUserDB(tx *sql.Tx, username string) (*User, int, error) {
+	// ユーザー名からユーザー情報を取得するクエリ
+	const selectUserByUsernameQuery = `
+        SELECT id, username, password_hash, is_online, is_registered, is_preparation
+        FROM users 
+        WHERE username = $1
+        LIMIT 1
+    `
+
 	user := &User{}
 	if err := tx.QueryRow(selectUserByUsernameQuery, username).Scan(
 		&user.ID,

@@ -5,7 +5,6 @@ type RegisterResponse struct {
 	Error   string `json:"error,omitempty"`
 }
 
-// トークンのレスポンス用構造体を追加
 type LoginResponse struct {
 	IsPreparation bool   `json:"is_preparation,omitempty"` // 初回ログインが済んでいるかどうか
 	AccessToken   string `json:"access_token,omitempty"`
