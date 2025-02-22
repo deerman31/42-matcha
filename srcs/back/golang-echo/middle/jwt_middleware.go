@@ -1,7 +1,8 @@
 package middle
 
 import (
-	"golang-echo/jwt_token"
+	"golang-echo/pkg/jwt_token"
+	"golang-echo/pkg/response"
 	"net/http"
 	"os"
 
@@ -21,14 +22,16 @@ func JWTMiddleware() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			tokenString, err := jwt_token.GetAuthToken(c)
 			if err != nil {
-				return c.JSON(http.StatusUnauthorized, map[string]string{
-					"error": err.Error(),
+				return c.JSON(http.StatusUnauthorized, response.Response{
+					Success: false, Error: err.Error(),
 				})
 			}
 
 			claims, err := jwt_token.ParseAndValidateAccessToken(tokenString, config.SecretKey)
 			if err != nil {
-				return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
+				return c.JSON(http.StatusUnauthorized, response.Response{
+					Success: false, Error: err.Error(),
+				})
 			}
 
 			// コンテキストにユーザー情報を設定
