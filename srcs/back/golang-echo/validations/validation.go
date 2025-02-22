@@ -2,11 +2,9 @@ package validations
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/go-playground/validator"
-	"github.com/labstack/echo/v4"
 )
 
 type CustomValidator struct {
@@ -56,7 +54,8 @@ func NewValidator() *CustomValidator {
 
 func (cv *CustomValidator) Validate(i interface{}) error {
 	if err := cv.validator.Struct(i); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		formattedErr := formatValidationError(err)
+		return formattedErr
 	}
 	return nil
 }
@@ -102,5 +101,5 @@ func formatValidationError(err error) error {
 		}
 	}
 
-	return fmt.Errorf("Validation failed: %s", strings.Join(errMsgs, "; "))
+	return fmt.Errorf("validation failed: %s", strings.Join(errMsgs, "; "))
 }

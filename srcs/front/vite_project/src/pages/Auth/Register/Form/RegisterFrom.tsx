@@ -53,7 +53,7 @@ const RegisterForm = () => {
     setSubmitStatus({ type: "", message: "" });
 
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +66,8 @@ const RegisterForm = () => {
         throw new Error(errorData.error || "送信に失敗しました");
       }
 
-      const data: Response = await response.json();
+      const d = await response.json();
+      const data: Response = d.data;
 
       setSubmitStatus({
         type: "success",
