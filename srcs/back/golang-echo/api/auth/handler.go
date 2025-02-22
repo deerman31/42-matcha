@@ -63,7 +63,7 @@ func (a *AuthHandler) loginHandler(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, response.Response{Success: false, Error: response.ServErrMessage})
 		}
 	}
-	return c.JSON(http.StatusForbidden, response.Response{Success: true, Data: response.LoginData{IsPreparation: user.isPreparation, AccessToken: accessToken}})
+	return c.JSON(http.StatusOK, response.Response{Success: true, Data: response.LoginData{IsPreparation: user.isPreparation, AccessToken: accessToken}})
 }
 
 func (a *AuthHandler) logoutHandler(c echo.Context) error {

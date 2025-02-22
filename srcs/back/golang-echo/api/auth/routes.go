@@ -13,4 +13,7 @@ func AuthRoutes(g *echo.Group, db *sql.DB) {
 	route.POST("/register", handler.registerHandler)
 	route.POST("/login", handler.loginHandler)
 	route.POST("/logout", handler.logoutHandler)
+
+	// メール認証のエンドポイント
+	// パスワード変更のエンドポイント
 }
