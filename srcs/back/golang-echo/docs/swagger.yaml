@@ -1,0 +1,179 @@
+basePath: /api/v1
+definitions:
+  schemas.ErrorResponse:
+    description: エラー発生時の共通レスポンス形式
+    properties:
+      error:
+        description: エラーメッセージ
+        example: internal server error
+        type: string
+    type: object
+  schemas.LoginRequest:
+    description: ログイン時のリクエスト内容
+    properties:
+      password:
+        description: パスワード
+        example: Password123!
+        type: string
+      username:
+        description: ユーザー名
+        example: ykusano
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  schemas.LoginResponse:
+    description: ログイン成功時のレスポンス
+    properties:
+      access_token:
+        description: JWTアクセストークン
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+      is_preparation:
+        description: 初回ログインが済んでいるかどうか
+        example: false
+        type: boolean
+    type: object
+  schemas.RegisterRequest:
+    description: ユーザー登録時のリクエスト内容
+    properties:
+      email:
+        description: メールアドレス
+        example: ykusano@test.com
+        type: string
+      password:
+        description: パスワード（8~30文字の英大小文字・数字・記号を含む）
+        example: Password123!
+        type: string
+      repassword:
+        description: パスワード（確認用）
+        example: Password123!
+        type: string
+      username:
+        description: ユーザー名（3~30文字の英数字とアンダースコア）
+        example: ykusano
+        type: string
+    required:
+    - email
+    - password
+    - repassword
+    - username
+    type: object
+  schemas.Response:
+    description: 処理成功時の共通レスポンス形式
+    properties:
+      message:
+        description: レスポンスメッセージ
+        example: successfully
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: APIの説明をここに書く
+  title: あなたのAPIタイトル
+  version: "1.0"
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: ユーザー認証を行い、アクセストークンを発行します。
+      parameters:
+      - description: ログイン情報
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ログイン成功
+          schema:
+            $ref: '#/definitions/schemas.LoginResponse'
+        "400":
+          description: リクエスト不正
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "403":
+          description: メール未認証またはパスワード不一致
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "404":
+          description: ユーザーが見つかりません
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: サーバーエラー
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      summary: ログイン
+      tags:
+      - 認証
+  /api/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーをログアウトし、アクセストークンを無効化します。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ログアウト成功
+          schema:
+            $ref: '#/definitions/schemas.Response'
+        "401":
+          description: 認証エラー（無効なトークンまたは期限切れ）
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "404":
+          description: ユーザーが見つかりません
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: サーバーエラー
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: ログアウト
+      tags:
+      - 認証
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: 新規ユーザーを登録します。ユーザー名、メールアドレス、パスワードが必要です。
+      parameters:
+      - description: 登録情報
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 登録成功
+          schema:
+            $ref: '#/definitions/schemas.Response'
+        "400":
+          description: リクエスト不正
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "409":
+          description: ユーザー名またはメールアドレスが既に使用されています
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: サーバーエラー
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      summary: ユーザー登録
+      tags:
+      - 認証
+swagger: "2.0"

@@ -5,10 +5,16 @@ const (
 	InvalidRequestMessage = "invalid request body"
 )
 
+// Response 正常系のレスポンス
+// @Description 処理成功時の共通レスポンス形式
 type Response struct {
-	Message string `json:"message"`
+	// レスポンスメッセージ
+	Message string `json:"message" example:"successfully"`
 }
 
+// ErrorResponse エラーレスポンス
+// @Description エラー発生時の共通レスポンス形式
 type ErrorResponse struct {
-	Error string `json:"error"`
+	// エラーメッセージ
+	Error string `json:"error" example:"internal server error"`
 }
