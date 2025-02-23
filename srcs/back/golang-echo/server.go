@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"golang-echo/database"
-	"golang-echo/middle"
-	"golang-echo/routes"
-	"golang-echo/validations"
+	"golang-echo/app/database"
+	"golang-echo/app/middle"
+	"golang-echo/app/routes"
+	"golang-echo/app/validations"
 	"log"
 
 	"github.com/labstack/echo/v4"
