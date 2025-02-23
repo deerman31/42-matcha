@@ -89,5 +89,5 @@ func (a *AuthHandler) LogoutHandler(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Error: schemas.ServErrMessage})
 		}
 	}
-	return c.JSON(http.StatusInternalServerError, schemas.Response{Message: schemas.LogoutSuccessMessage})
+	return c.JSON(http.StatusOK, schemas.Response{Message: schemas.LogoutSuccessMessage})
 }
