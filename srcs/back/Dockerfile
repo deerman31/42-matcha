@@ -5,11 +5,17 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
+# Swaggoのインストール
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 COPY ./golang-echo/go.mod ./golang-echo/go.sum ./
 
 RUN go mod download
 
 COPY ./golang-echo/ .
+
+# Swaggerドキュメントの生成
+RUN swag init -g server.go
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
