@@ -5,6 +5,8 @@ const (
 	LogoutSuccessMessage   = "user logout successfully"
 	PasswordNoMatchMessage = "password and confirm password do not match"
 	VerifyEmailSuccessMessage   = "user registration is complete"
+	ResetPasswordEmailSend = "password reset mail send"
+	ResetPasswordSuccess = "password reset successfully"
 )
 
 // 各エンドポイントの成功時のレスポンスデータ
@@ -43,4 +45,17 @@ type User struct {
 	IsOnline      bool
 	IsRegistered  bool
 	IsPreparation bool
+}
+
+// @Description PasswordをResetするときに送るメールアドレス
+type ResetPasswordEmailRequest struct {
+	// メールアドレス
+	Email string `json:"email" validate:"required,email" example:"ykusano@test.com"`
+}
+
+// @Description PasswordをResetするときのリクエスト内容
+type ResetPasswordRequest struct {
+	// メールアドレス
+	Password string `json:"password" validate:"required,password" example:"Password123~"`
+	RePassword string `json:"repassword" validate:"required,password" example:"Password123~"`
 }

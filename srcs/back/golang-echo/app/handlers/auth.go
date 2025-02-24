@@ -153,3 +153,76 @@ func (a *AuthHandler) VerifyEmailHandler(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, schemas.Response{Message: schemas.VerifyEmailSuccessMessage})
 }
+
+// ResetPasswordEmail godoc
+// @Summary PasswordをResetする
+// @Description PasswordをResetするリンクのあるメールを送信
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body schemas.ResetPasswordEmailRequest true "送信するメールアドレス"
+// @Success 200 {object} schemas.Response "認証成功"
+// @Failure 404 {object} schemas.ErrorResponse "ユーザーが見つかりません"
+// @Failure 500 {object} schemas.ErrorResponse "サーバーエラー"
+// @Router /api/auth/reset-password-email [post]
+func (a *AuthHandler) ResetPasswordEmailHandler(c echo.Context) error {
+	req := new(schemas.ResetPasswordEmailRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, schemas.ErrorResponse{Error: schemas.InvalidRequestMessage})
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest, schemas.ErrorResponse{Error: err.Error()})
+	}
+	err := a.service.ResetPasswordEmailService(req.Email)
+	if err != nil {
+		switch err {
+		case errors.ErrUserNotFound:
+			return c.JSON(http.StatusNotFound, schemas.ErrorResponse{Error: err.Error()})
+		default:
+			return c.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Error: schemas.ServErrMessage})
+		}
+	}
+	return c.JSON(http.StatusOK, schemas.Response{Message: schemas.ResetPasswordEmailSend})
+}
+
+// パスワードリセットを送信する godoc
+// @Summary パスワードをリセット
+// @Description パスワードをリセット
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param token path string true "認証token"
+// @Param request body schemas.ResetPasswordRequest true "パスワードのjson"
+// @Success 201 {object} schemas.Response "変更成功"
+// @Failure 400 {object} schemas.ErrorResponse "リクエスト不正"
+// @Failure 401 {object} schemas.ErrorResponse "認証エラー（無効なトークンまたは期限切れ）"
+// @Failure 409 {object} schemas.ErrorResponse "ユーザー名またはメールアドレスが既に使用されています"
+// @Failure 500 {object} schemas.ErrorResponse "サーバーエラー"
+// @Router /api/auth/reset-password/{token} [post]
+func (a *AuthHandler) ResetPasswordHandler(c echo.Context) error {
+	token := c.Param("token")
+	req := new(schemas.ResetPasswordRequest)
+	if err := c.Bind(req); err != nil {
+		return c.JSON(http.StatusBadRequest, schemas.ErrorResponse{Error: schemas.InvalidRequestMessage})
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest, schemas.ErrorResponse{Error: err.Error()})
+	}
+
+	if req.Password != req.RePassword {
+		return c.JSON(http.StatusBadRequest, schemas.ErrorResponse{Error: schemas.PasswordNoMatchMessage})
+	}
+
+	err := a.service.ResetPasswordService(token, req.Password)
+	if err != nil {
+		switch err {
+		case errors.ErrUserNotFound:
+			return c.JSON(http.StatusNotFound, schemas.ErrorResponse{Error: err.Error()})
+		case errors.ErrTokenUnauthorized:
+			return c.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Error: err.Error()})
+		default:
+			return c.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Error: schemas.ServErrMessage})
+		}
+	}
+	return c.JSON(http.StatusOK, schemas.Response{Message: schemas.ResetPasswordSuccess})
+}

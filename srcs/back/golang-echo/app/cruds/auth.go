@@ -145,3 +145,44 @@ func UpdateUserStatusRegister(tx *sql.Tx, myID int) error {
 	}
 	return nil
 }
+
+func FetchUserIDByEmail(tx *sql.Tx, email string) (int, error) {
+	// ユーザー名からユーザー情報を取得するクエリ
+	const Query = `
+        SELECT id
+        FROM users 
+        WHERE email = $1
+        LIMIT 1
+    `
+
+	userID := 0
+	if err := tx.QueryRow(Query, email).Scan(&userID); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, myErrors.ErrUserNotFound
+		}
+		return 0, myErrors.ErrTransactionFailed
+	}
+	return userID, nil
+}
+
+func UpdateUserPasswordHash(tx *sql.Tx, userID int, password_hash string) error {
+	const Query = `
+        UPDATE users 
+        SET password_hash = $2 
+        WHERE id = $1
+    `
+	result, err := tx.Exec(Query, userID, password_hash)
+	if err != nil {
+		return myErrors.ErrTransactionFailed
+	}
+	// 更新が成功したか確認
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return myErrors.ErrTransactionFailed
+	}
+	// userが見つからなかった場合
+	if rows == 0 {
+		return myErrors.ErrUserNotFound
+	}
+	return nil
+}

@@ -22,7 +22,7 @@ func authRoutes(g *echo.Group, db *sql.DB) {
 	// メールを使った本登録のエンドポイント
 	route.GET("/verify-email/:token", handler.VerifyEmailHandler)
 
-	// route.POST("/verify-email", handler.VerifyEmail)
-	//　メールを使って、passwordを変更ができるエンドポイント
-	// route.POST("/reset-password", handler.ResetPassword)
+	route.POST("/reset-password-email", handler.ResetPasswordEmailHandler)
+
+	route.POST("/reset-password/:token", handler.ResetPasswordHandler)
 }

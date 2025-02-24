@@ -8,8 +8,11 @@ import (
 )
 
 const (
-	Mime = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	Subject =  "メールアドレスの認証"
+	Mime                      = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	MailVerifyEndPoint        = "http://localhost:3000/api/auth/verify-email/"
+	MailResetPasswordEndPoint = "http://localhost:3000/api/auth/reset-password/"
+	VerifySubject             = "メールアドレスの認証"
+	ResetPasswordSubject      = "PasswordReset"
 )
 
 type Config struct {
@@ -18,7 +21,6 @@ type Config struct {
 	username  string
 	password  string
 	fromEmail string
-	endpoint  string
 }
 
 // シングルトンとしてのconfig
@@ -30,28 +32,30 @@ func init() {
 	username := os.Getenv("MAILTRAP_USERNAME")
 	password := os.Getenv("MAILTRAP_PASSWORD")
 	fromEmail := os.Getenv("MAILTRAP_FROM_EMAIL")
-	endpoint := os.Getenv("MAIL_VERIFY_ENDPOINT_URL")
 	config = &Config{
 		host:      host,
 		port:      port,
 		username:  username,
 		password:  password,
 		fromEmail: fromEmail,
-		endpoint:  endpoint,
 	}
 }
 
-func SendVerifyEmail(token string, toEmail string) error {
-	// HTMLメールの本文を作成
-
-	verifyURL := generateVerifyURL(config.endpoint, token)
-
-	htmlBody := generateHtmlBody(verifyURL)
-
-	if err := sendEmail(config.username, config.password, config.host, config.port, config.fromEmail, toEmail, Subject, htmlBody); err != nil {
+func SendResetPasswordEmail(token string, toEmail string) error {
+	verifyURL := generateVerifyURL(MailResetPasswordEndPoint, token)
+	htmlBody := generateResetPasswordBody(verifyURL)
+	if err := sendEmail(config.username, config.password, config.host, config.port, config.fromEmail, toEmail, ResetPasswordSubject, htmlBody); err != nil {
 		return err
 	}
+	return nil
+}
 
+func SendVerifyEmail(token string, toEmail string) error {
+	verifyURL := generateVerifyURL(MailVerifyEndPoint, token)
+	htmlBody := generateVerifyBody(verifyURL)
+	if err := sendEmail(config.username, config.password, config.host, config.port, config.fromEmail, toEmail, VerifySubject, htmlBody); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -97,7 +101,7 @@ func generateVerifyURL(endpoint, token string) string {
 	return fmt.Sprintf("%s%s", endpoint, token)
 }
 
-func generateHtmlBody(url string) string {
+func generateVerifyBody(url string) string {
 	return fmt.Sprintf(`
         <html>
         <body>
@@ -111,4 +115,58 @@ func generateHtmlBody(url string) string {
         </body>
         </html>
     `, url, url)
+}
+
+func generateResetPasswordBody(url string) string {
+    return fmt.Sprintf(`
+        <html>
+        <body>
+            <h2>パスワードリセット</h2>
+            <p>パスワードリセットのリクエストを受け付けました。以下のフォームに新しいパスワードを入力し、送信ボタンをクリックしてください：</p>
+            <!-- フォーム部分 -->
+            <form id="passwordForm" onsubmit="return submitForm(event)">
+                <div>
+                    <label for="password">新しいパスワード：</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div>
+                    <label for="confirm_password">新しいパスワード（確認）：</label>
+                    <input type="password" id="confirm_password" required>
+                </div>
+                <button type="submit">パスワードを変更する</button>
+            </form>
+
+            <script>
+            function submitForm(event) {
+                event.preventDefault();  // デフォルトのフォーム送信を防止
+                
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                
+                if (password !== confirmPassword) {
+                    alert('パスワードが一致しません。');
+                    return false;
+                }
+
+                fetch('%s', {  // URLはGo側で正しく置換される
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({password, confirm_password})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('パスワードが正常に更新されました。');
+                    document.getElementById('passwordForm').reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました：' + error.message);
+                });
+
+                return false;
+            }
+            </script>
+        </body>
+    </html>
+    `, url)
 }

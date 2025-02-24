@@ -138,13 +138,65 @@ func (a *AuthService) VerifyEmailService(token string) error {
 	claims, err := jwt_token.ParseAndValidateVerifyEmailToken(token)
 	if err != nil {
 		return err
-		//return errors.ErrTokenUnauthorized
 	}
 
 	if err := cruds.UpdateUserStatusRegister(tx, claims.UserID); err != nil {
 		return err
 	}
 
+	// トランザクションのコミット
+	if err = tx.Commit(); err != nil {
+		return errors.ErrTransactionFailed
+	}
+	return nil
+}
+
+func (a *AuthService) ResetPasswordEmailService(sendEmail string) error {
+	// トランザクションを開始
+	tx, err := a.db.Begin()
+	if err != nil {
+		return errors.ErrTransactionFailed
+	}
+	defer tx.Rollback() // エラーが発生した場合はロールバック
+
+	userID, err := cruds.FetchUserIDByEmail(tx, sendEmail)
+	if err != nil {
+		return err
+	}
+	token, err := jwt_token.GenerateVerifyEmailToken(userID)
+	if err != nil {
+		return err
+	}
+	if err := email.SendResetPasswordEmail(token, sendEmail); err != nil {
+		return err
+	}
+	// トランザクションのコミット
+	if err = tx.Commit(); err != nil {
+		return errors.ErrTransactionFailed
+	}
+	return nil
+}
+
+func (a *AuthService) ResetPasswordService(token, password string) error {
+	// トランザクションを開始
+	tx, err := a.db.Begin()
+	if err != nil {
+		return errors.ErrTransactionFailed
+	}
+	defer tx.Rollback() // エラーが発生した場合はロールバック
+
+	claims, err := jwt_token.ParseAndValidateVerifyEmailToken(token)
+	if err != nil {
+		return err
+	}
+	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.ErrTransactionFailed
+	}
+	password_hash := string(hashedBytes)
+	if err := cruds.UpdateUserPasswordHash(tx, claims.UserID, password_hash); err != nil {
+		return err
+	}
 	// トランザクションのコミット
 	if err = tx.Commit(); err != nil {
 		return errors.ErrTransactionFailed
