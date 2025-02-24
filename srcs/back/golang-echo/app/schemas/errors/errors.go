@@ -10,4 +10,6 @@ var (
 	ErrTransactionFailed = errors.New("transaction failed")
 
 	ErrUserNameEmailConflict = errors.New("username or email is already registered")
+
+	ErrTokenUnauthorized = errors.New("invalid token")
 )

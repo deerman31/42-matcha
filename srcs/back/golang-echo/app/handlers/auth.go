@@ -1,13 +1,11 @@
 package handlers
 
 import (
-	"golang-echo/app/cruds"
 	"golang-echo/app/schemas"
 	"golang-echo/app/schemas/errors"
 	"golang-echo/app/services"
 	"golang-echo/app/utils/jwt_token"
 	"net/http"
-	"os"
 
 	"github.com/labstack/echo/v4"
 )
@@ -106,13 +104,12 @@ func (a *AuthHandler) LoginHandler(c echo.Context) error {
 // @Failure 500 {object} schemas.ErrorResponse "サーバーエラー"
 // @Router /api/auth/logout [post]
 func (a *AuthHandler) LogoutHandler(c echo.Context) error {
-	secretKey := os.Getenv("JWT_SECRET_KEY")
 	// Authorizationヘッダーを取得
 	tokenString, err := jwt_token.GetAuthToken(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Error: err.Error()})
 	}
-	claims, err := cruds.VerifyTokenClaims(tokenString, secretKey)
+	claims, err := jwt_token.VerifyTokenClaims(tokenString)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Error: err.Error()})
 	}
@@ -127,4 +124,32 @@ func (a *AuthHandler) LogoutHandler(c echo.Context) error {
 		}
 	}
 	return c.JSON(http.StatusOK, schemas.Response{Message: schemas.LogoutSuccessMessage})
+}
+
+// VerifyEmail godoc
+// @Summary メールアドレス認証
+// @Description メール認証用トークンを検証し、ユーザーアカウントを有効化します
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param token path string true "認証トークン"
+// @Success 200 {object} schemas.Response "認証成功"
+// @Failure 401 {object} schemas.ErrorResponse "トークン認証エラー（無効なトークンまたは期限切れ）"
+// @Failure 404 {object} schemas.ErrorResponse "ユーザーが見つかりません"
+// @Failure 500 {object} schemas.ErrorResponse "サーバーエラー"
+// @Router /api/auth/verify-email/{token} [get]
+func (a *AuthHandler) VerifyEmailHandler(c echo.Context) error {
+	token := c.Param("token")
+	err := a.service.VerifyEmailService(token)
+	if err != nil {
+		switch err {
+		case errors.ErrTokenUnauthorized:
+			return c.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Error: err.Error()})
+		case errors.ErrUserNotFound:
+			return c.JSON(http.StatusNotFound, schemas.ErrorResponse{Error: err.Error()})
+		default:
+			return c.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Error: schemas.ServErrMessage})
+		}
+	}
+	return c.JSON(http.StatusOK, schemas.Response{Message: schemas.VerifyEmailSuccessMessage})
 }

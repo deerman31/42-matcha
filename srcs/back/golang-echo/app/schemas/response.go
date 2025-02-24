@@ -16,5 +16,5 @@ type Response struct {
 // @Description エラー発生時の共通レスポンス形式
 type ErrorResponse struct {
 	// エラーメッセージ
-	Error string `json:"error" example:"internal server error"`
+	Error string `json:"error" example:"error"`
 }

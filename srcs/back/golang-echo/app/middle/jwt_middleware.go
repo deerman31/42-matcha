@@ -4,20 +4,11 @@ import (
 	"golang-echo/app/schemas"
 	"golang-echo/app/utils/jwt_token"
 	"net/http"
-	"os"
 
 	"github.com/labstack/echo/v4"
 )
 
-// JWTConfig はミドルウェアの設定を保持する構造体
-type JWTConfig struct {
-	SecretKey string
-}
-
 func JWTMiddleware() echo.MiddlewareFunc {
-	config := &JWTConfig{
-		SecretKey: os.Getenv("JWT_SECRET_KEY"),
-	}
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			tokenString, err := jwt_token.GetAuthToken(c)
@@ -27,7 +18,7 @@ func JWTMiddleware() echo.MiddlewareFunc {
 				})
 			}
 
-			claims, err := jwt_token.ParseAndValidateAccessToken(tokenString, config.SecretKey)
+			claims, err := jwt_token.ParseAndValidateAccessToken(tokenString)
 			if err != nil {
 				return c.JSON(http.StatusUnauthorized, schemas.ErrorResponse{
 					Error: err.Error(),

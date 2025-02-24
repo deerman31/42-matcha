@@ -1,17 +1,25 @@
 package jwt_token
 
 import (
-	"fmt"
+	"golang-echo/app/schemas/errors"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func ParseAndValidateAccessToken(tokenString, secretKey string) (*Claims, error) {
+func ParseAndValidateAccessToken(tokenString string) (*Claims, error) {
+	return parseValidateToken(tokenString, config.accessSecretKey)
+}
+
+func ParseAndValidateVerifyEmailToken(tokenString string) (*Claims, error) {
+	return parseValidateToken(tokenString, config.verifyEmailSecretKey)
+}
+
+func parseValidateToken(tokenStr, secretKey string) (*Claims, error) {
 	// トークンの解析
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		// 署名方式の検証
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, errors.ErrTokenUnauthorized
 		}
 		return []byte(secretKey), nil
 	})
@@ -21,7 +29,7 @@ func ParseAndValidateAccessToken(tokenString, secretKey string) (*Claims, error)
 	// クレームの取得と検証
 	claims, ok := token.Claims.(*Claims)
 	if !ok || !token.Valid {
-		return nil, fmt.Errorf("Invalid token claims")
+		return nil, errors.ErrTokenUnauthorized
 	}
 	return claims, nil
 }

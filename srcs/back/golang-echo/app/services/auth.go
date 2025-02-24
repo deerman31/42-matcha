@@ -120,5 +120,34 @@ func (a *AuthService) LogoutService(myID int) error {
 	if err := cruds.UserOnlineStatusOff(tx, myID); err != nil {
 		return err
 	}
-	return tx.Commit()
+	// トランザクションのコミット
+	if err = tx.Commit(); err != nil {
+		return errors.ErrTransactionFailed
+	}
+	return nil
+}
+
+func (a *AuthService) VerifyEmailService(token string) error {
+	// トランザクションを開始
+	tx, err := a.db.Begin()
+	if err != nil {
+		return errors.ErrTransactionFailed
+	}
+	defer tx.Rollback() // エラーが発生した場合はロールバック
+
+	claims, err := jwt_token.ParseAndValidateVerifyEmailToken(token)
+	if err != nil {
+		return err
+		//return errors.ErrTokenUnauthorized
+	}
+
+	if err := cruds.UpdateUserStatusRegister(tx, claims.UserID); err != nil {
+		return err
+	}
+
+	// トランザクションのコミット
+	if err = tx.Commit(); err != nil {
+		return errors.ErrTransactionFailed
+	}
+	return nil
 }

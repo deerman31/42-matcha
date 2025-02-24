@@ -10,8 +10,9 @@ import (
 
 // settingを保持するsturct
 type Config struct {
-	secretKey             string
+	accessSecretKey       string
 	accessTokenLimit      int
+	verifyEmailSecretKey  string
 	verifyEmailTokenLimit int
 }
 
@@ -20,9 +21,13 @@ var config *Config
 
 // パッケージの初期化
 func init() {
-	secretKey := os.Getenv("JWT_SECRET_KEY")
-	if secretKey == "" {
+	accessSecretKey := os.Getenv("JWT_SECRET_KEY")
+	if accessSecretKey == "" {
 		panic("JWT_SECRET_KEY is not set")
+	}
+	verifyEmailSecretKey := os.Getenv("VERIFY_EMAIL_KEY")
+	if verifyEmailSecretKey == "" {
+		panic("VERIFY_EMAIL_KEY is not set")
 	}
 	accessTokenLimitStr := os.Getenv("ACCESS_TOKEN_LIMIT")
 	accessTokenLimit, err := strconv.Atoi(accessTokenLimitStr)
@@ -35,8 +40,9 @@ func init() {
 		verifyEmailTokenLimit = 1 // デフォルト値
 	}
 	config = &Config{
-		secretKey:             secretKey,
+		accessSecretKey:       accessSecretKey,
 		accessTokenLimit:      accessTokenLimit,
+		verifyEmailSecretKey:  verifyEmailSecretKey,
 		verifyEmailTokenLimit: verifyEmailTokenLimit,
 	}
 }
@@ -48,11 +54,11 @@ type Claims struct {
 }
 
 func GenerateAccessToken(userID int) (string, error) {
-	return generateToken(userID, config.secretKey, config.accessTokenLimit)
+	return generateToken(userID, config.accessSecretKey, config.accessTokenLimit)
 }
 
 func GenerateVerifyEmailToken(userID int) (string, error) {
-	return generateToken(userID, config.secretKey, config.verifyEmailTokenLimit)
+	return generateToken(userID, config.verifyEmailSecretKey, config.verifyEmailTokenLimit)
 }
 
 func generateToken(userID int, secretKey string, tokenLimit int) (string, error) {

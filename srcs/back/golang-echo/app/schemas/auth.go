@@ -4,6 +4,7 @@ const (
 	RegisterSuccessMessage = "user created successfully. please check your email to verify your account"
 	LogoutSuccessMessage   = "user logout successfully"
 	PasswordNoMatchMessage = "password and confirm password do not match"
+	VerifyEmailSuccessMessage   = "user registration is complete"
 )
 
 // 各エンドポイントの成功時のレスポンスデータ

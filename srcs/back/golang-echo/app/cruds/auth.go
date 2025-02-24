@@ -6,10 +6,7 @@ import (
 	"fmt"
 	"golang-echo/app/schemas"
 	myErrors "golang-echo/app/schemas/errors"
-	"golang-echo/app/utils/jwt_token"
 	"net/http"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func CheckDuplicateUserCredentials(tx *sql.Tx, username, email string) (int, error) {
@@ -127,30 +124,24 @@ func UserOnlineStatusOff(tx *sql.Tx, myID int) error {
 	return nil
 }
 
-func VerifyTokenClaims(tokenString, secretKey string) (*jwt_token.Claims, error) {
-	// トークンの解析
-	token, err := jwt.ParseWithClaims(tokenString, &jwt_token.Claims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(secretKey), nil
-	})
-
-	// まず、署名が正しいかどうかに関係なくClaimsを取得
-	if token != nil { // tokenがnilでないことを確認
-		claims, ok := token.Claims.(*jwt_token.Claims)
-		if !ok {
-			return nil, fmt.Errorf("invalid token claims")
-		}
-
-		// エラーがある場合でも、期限切れエラーのみの場合は claims を返す
-		if err != nil {
-			if err.Error() == "Token is expired" {
-				return claims, nil
-			}
-		}
-		return claims, nil
+func UpdateUserStatusRegister(tx *sql.Tx, myID int) error {
+	const Query = `
+        UPDATE users 
+        SET is_registered = TRUE 
+        WHERE id = $1
+    `
+	result, err := tx.Exec(Query, myID)
+	if err != nil {
+		return myErrors.ErrTransactionFailed
 	}
-	// tokenがnilの場合やその他のエラーの場合
-	return nil, err
+	// 更新が成功したか確認
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return myErrors.ErrTransactionFailed
+	}
+	// userが見つからなかった場合
+	if rows == 0 {
+		return myErrors.ErrUserNotFound
+	}
+	return nil
 }
