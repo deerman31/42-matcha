@@ -23,7 +23,7 @@ func NewAuthHandler(service *services.AuthService) *AuthHandler {
 // Register godoc
 // @Summary ユーザー登録
 // @Description 新規ユーザーを登録します。ユーザー名、メールアドレス、パスワードが必要です。
-// @Tags 認証
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param request body schemas.RegisterRequest true "登録情報"
@@ -58,7 +58,7 @@ func (a *AuthHandler) RegisterHandler(c echo.Context) error {
 // Login godoc
 // @Summary ログイン
 // @Description ユーザー認証を行い、アクセストークンを発行します。
-// @Tags 認証
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Param request body schemas.LoginRequest true "ログイン情報"
@@ -96,7 +96,7 @@ func (a *AuthHandler) LoginHandler(c echo.Context) error {
 // Logout godoc
 // @Summary ログアウト
 // @Description ユーザーをログアウトし、アクセストークンを無効化します。
-// @Tags 認証
+// @Tags auth
 // @Accept json
 // @Produce json
 // @Security BearerAuth

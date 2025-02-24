@@ -20,7 +20,7 @@ import (
 // @version 1.0
 // @description APIの説明をここに書く
 // @host localhost:3000
-// @BasePath /api/v1
+// @BasePath /
 func main() {
 	// データベースに接続
 	db, err := database.ConnectDB()

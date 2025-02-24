@@ -12,7 +12,15 @@ func authRoutes(g *echo.Group, db *sql.DB) {
 	route := g.Group("/auth")
 
 	handler := handlers.NewAuthHandler(services.NewAuthService(db))
+	// 仮登録
 	route.POST("/register", handler.RegisterHandler)
+	// Login
 	route.POST("/login", handler.LoginHandler)
+	// Logout
 	route.POST("/logout", handler.LogoutHandler)
+
+	// メールを使った本登録のエンドポイント
+	// route.POST("/verify-email", handler.VerifyEmail)
+	//　メールを使って、passwordを変更ができるエンドポイント
+	// route.POST("/reset-password", handler.ResetPassword)
 }
