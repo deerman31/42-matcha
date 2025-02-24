@@ -7,13 +7,17 @@ import (
 	"strings"
 )
 
+const (
+	Mime = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	Subject =  "メールアドレスの認証"
+)
+
 type Config struct {
 	host      string
 	port      string
 	username  string
 	password  string
 	fromEmail string
-	subject   string
 	endpoint  string
 }
 
@@ -26,7 +30,6 @@ func init() {
 	username := os.Getenv("MAILTRAP_USERNAME")
 	password := os.Getenv("MAILTRAP_PASSWORD")
 	fromEmail := os.Getenv("MAILTRAP_FROM_EMAIL")
-	subject := "メールアドレスの認証"
 	endpoint := os.Getenv("MAIL_VERIFY_ENDPOINT_URL")
 	config = &Config{
 		host:      host,
@@ -34,7 +37,6 @@ func init() {
 		username:  username,
 		password:  password,
 		fromEmail: fromEmail,
-		subject:   subject,
 		endpoint:  endpoint,
 	}
 }
@@ -46,7 +48,7 @@ func SendVerifyEmail(token string, toEmail string) error {
 
 	htmlBody := generateHtmlBody(verifyURL)
 
-	if err := sendEmail(config.username, config.password, config.host, config.port, config.fromEmail, toEmail, config.subject, htmlBody); err != nil {
+	if err := sendEmail(config.username, config.password, config.host, config.port, config.fromEmail, toEmail, Subject, htmlBody); err != nil {
 		return err
 	}
 
@@ -55,8 +57,6 @@ func SendVerifyEmail(token string, toEmail string) error {
 
 func sendEmail(username, password, host, port, fromEmail, toEmail, subject, htmlBody string) error {
 	toEmails := []string{toEmail}
-	// MEMEバージョンを指定したマルチパートメールを作成
-	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 
 	// メールヘッダーの作成
 	headers := make(map[string]string)
@@ -69,7 +69,7 @@ func sendEmail(username, password, host, port, fromEmail, toEmail, subject, html
 	for key, value := range headers {
 		message += fmt.Sprintf("%s: %s\r\n", key, value)
 	}
-	message += mime + htmlBody
+	message += Mime + htmlBody
 
 	// SMTP認証
 	auth := smtp.PlainAuth(
@@ -88,7 +88,6 @@ func sendEmail(username, password, host, port, fromEmail, toEmail, subject, html
 		[]byte(message),
 	)
 	if err != nil {
-		fmt.Printf("メール送信エラー: %s\n", err)
 		return err
 	}
 	return nil
