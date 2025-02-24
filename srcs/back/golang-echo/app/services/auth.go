@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"golang-echo/app/cruds"
+	"golang-echo/app/email"
 	"golang-echo/app/schemas"
 	"golang-echo/app/schemas/errors"
 	"golang-echo/app/utils/jwt_token"
@@ -43,14 +44,29 @@ func (a *AuthService) RegisterService(req *schemas.RegisterRequest) error {
 	}
 	req.Password = string(hashedBytes)
 	// ユーザーの登録
-	_, err = cruds.CreateUser(tx, req)
+	userID, err := cruds.CreateUser(tx, req)
 	if err != nil {
 		return errors.ErrTransactionFailed
 	}
-	return tx.Commit()
+
+	token, err := jwt_token.GenerateVerifyEmailToken(userID)
+	if err != nil {
+		return err
+	}
+
+	if err := email.SendVerifyEmail(token, req.Email); err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return errors.ErrTransactionFailed
+	}
+
+	return nil
+
 }
 
-//func (a *AuthService) LoginService(req *schemas.LoginRequest) (*schemas.User, string, error) {
+// func (a *AuthService) LoginService(req *schemas.LoginRequest) (*schemas.User, string, error) {
 func (a *AuthService) LoginService(req *schemas.LoginRequest) (bool, string, error) {
 	// トランザクションを開始
 	tx, err := a.db.Begin()
