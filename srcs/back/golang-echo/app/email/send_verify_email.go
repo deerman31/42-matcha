@@ -117,13 +117,46 @@ func generateVerifyBody(url string) string {
     `, url, url)
 }
 
+
+
+
 func generateResetPasswordBody(url string) string {
     return fmt.Sprintf(`
         <html>
+        <head>
+            <style>
+                .success-message {
+                    color: green;
+                    padding: 20px;
+                    border-radius: 5px;
+                    background-color: #dff0d8;
+                    margin-top: 20px;
+                    display: none;
+                }
+                .error-message {
+                    color: red;
+                    padding: 20px;
+                    border-radius: 5px;
+                    background-color: #f2dede;
+                    margin-top: 20px;
+                    display: none;
+                }
+            </style>
+        </head>
         <body>
             <h2>パスワードリセット</h2>
             <p>パスワードリセットのリクエストを受け付けました。以下のフォームに新しいパスワードを入力し、送信ボタンをクリックしてください：</p>
-            <!-- フォーム部分 -->
+            
+            <!-- 成功メッセージ -->
+            <div id="successMessage" class="success-message">
+                パスワードが正常に更新されました。
+            </div>
+            
+            <!-- エラーメッセージ -->
+            <div id="errorMessage" class="error-message">
+                エラーが発生しました。もう一度お試しください。
+            </div>
+
             <form id="passwordForm" onsubmit="return submitForm(event)">
                 <div>
                     <label for="password">新しいパスワード：</label>
@@ -138,29 +171,41 @@ func generateResetPasswordBody(url string) string {
 
             <script>
             function submitForm(event) {
-                event.preventDefault();  // デフォルトのフォーム送信を防止
+                event.preventDefault();
                 
+                // メッセージを非表示にする
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+
                 const password = document.getElementById('password').value;
                 const confirmPassword = document.getElementById('confirm_password').value;
                 
                 if (password !== confirmPassword) {
-                    alert('パスワードが一致しません。');
+                    document.getElementById('errorMessage').textContent = 'パスワードが一致しません。';
+                    document.getElementById('errorMessage').style.display = 'block';
                     return false;
                 }
 
-                fetch('%s', {  // URLはGo側で正しく置換される
+                fetch('%s', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({password, confirm_password})
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => Promise.reject(err));
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    alert('パスワードが正常に更新されました。');
+                    document.getElementById('successMessage').style.display = 'block';
                     document.getElementById('passwordForm').reset();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('エラーが発生しました：' + error.message);
+                    document.getElementById('errorMessage').textContent = 
+                        'エラーが発生しました：' + (error.message || '不明なエラーが発生しました');
+                    document.getElementById('errorMessage').style.display = 'block';
                 });
 
                 return false;

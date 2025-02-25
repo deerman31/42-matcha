@@ -56,6 +56,6 @@ type ResetPasswordEmailRequest struct {
 // @Description PasswordをResetするときのリクエスト内容
 type ResetPasswordRequest struct {
 	// メールアドレス
-	Password string `json:"password" validate:"required,password" example:"Password123~"`
-	RePassword string `json:"repassword" validate:"required,password" example:"Password123~"`
+	Password string `json:"password" validate:"required,password" example:"Password123@"`
+	RePassword string `json:"repassword" validate:"required,password" example:"Password123@"`
 }
